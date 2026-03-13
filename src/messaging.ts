@@ -55,6 +55,47 @@ export interface ProactiveSendOptions {
   fallbackToNormal?: boolean;
 }
 
+// ============ Markdown 格式修正 ============
+
+/**
+ * 确保 Markdown 表格前有空行，否则钉钉无法正确渲染表格。
+ *
+ * 逐行向前看：当前行像表头（含 `|`）且下一行是分隔行时，
+ * 若前一行非空且非表格行，则在表头前插入空行。
+ * 支持缩进表格（行首有空白字符）。
+ */
+function ensureTableBlankLines(text: string): string {
+  const lines = text.split('\n');
+  const result: string[] = [];
+
+  // 匹配表格分隔行 (例如 | --- | --- | 或 --- | ---)
+  const tableDividerRegex = /^\s*\|?\s*:?-+:?\s*(\|?\s*:?-+:?\s*)+\|?\s*$/;
+  // 匹配包含竖线的表格行
+  const tableRowRegex = /^\s*\|?.*\|.*\|?\s*$/;
+
+  const isDivider = (line: string) => line.includes('|') && tableDividerRegex.test(line);
+
+  for (let i = 0; i < lines.length; i++) {
+    const currentLine = lines[i];
+    const nextLine = lines[i + 1] ?? '';
+
+    // 逻辑：
+    // 1. 当前行看起来像表头（包含 |）
+    // 2. 下一行是分隔行（---）
+    // 3. 前一行不是空行且不是表格行
+    if (
+      tableRowRegex.test(currentLine) &&
+      isDivider(nextLine) &&
+      i > 0 && lines[i - 1].trim() !== '' && !tableRowRegex.test(lines[i - 1])
+    ) {
+      result.push('');
+    }
+
+    result.push(currentLine);
+  }
+  return result.join('\n');
+}
+
 // ============ AI Card 相关 ============
 
 /**
@@ -78,7 +119,7 @@ function buildDeliverBody(
   return {
     ...base,
     openSpaceId: `dtv1.card//IM_ROBOT.${target.userId}`,
-    imRobotOpenSpaceModel: { spaceType: 'IM_ROBOT', robotCode },
+    imRobotOpenDeliverModel: { spaceType: 'IM_ROBOT', robotCode },
   };
 }
 
@@ -95,6 +136,7 @@ export async function createAICardForTarget(
     : `用户 ${target.userId}`;
 
   try {
+    console.log(`[createAICardForTarget] 被调用: targetDesc=${targetDesc}, log=${typeof log}, hasInfo=${typeof log?.info}`);
     const token = await getAccessToken(config);
     const cardInstanceId = `card_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 
@@ -173,11 +215,13 @@ export async function streamAICard(
   }
 
   // 调用 streaming API 更新内容
+  // ✅ 修正 Markdown 表格格式，确保钉钉能正确渲染
+  const fixedContent = ensureTableBlankLines(content);
   const body = {
     outTrackId: card.cardInstanceId,
     guid: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     key: 'msgContent',
-    content: content,
+    content: fixedContent,
     isFull: true,
     isFinalize: finished,
     isError: false,
@@ -203,10 +247,12 @@ export async function finishAICard(
   content: string,
   log?: any,
 ): Promise<void> {
-  log?.info?.(`[DingTalk][AICard] 开始 finish，最终内容长度=${content.length}`);
+  // ✅ 修正 Markdown 表格格式
+  const fixedContent = ensureTableBlankLines(content);
+  log?.info?.(`[DingTalk][AICard] 开始 finish，最终内容长度=${fixedContent.length}`);
 
   // 1. 先用最终内容关闭流式通道
-  await streamAICard(card, content, true, log);
+  await streamAICard(card, fixedContent, true, log);
 
   // 2. 更新卡片状态为 FINISHED
   const body = {
@@ -214,7 +260,7 @@ export async function finishAICard(
     cardData: {
       cardParamMap: {
         flowStatus: AICardStatus.FINISHED,
-        msgContent: content,
+        msgContent: fixedContent,
         staticMsgContent: '',
         sys_full_json_obj: JSON.stringify({
           order: ['msgContent'],

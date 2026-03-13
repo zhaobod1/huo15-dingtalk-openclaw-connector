@@ -72,6 +72,7 @@ export type MessageHandler = (params: {
   sessionWebhook: string;
   runtime?: RuntimeEnv;
   log?: any;
+  cfg: ClawdbotConfig;
 }) => Promise<void>;
 
 // ============ 监控账号 ============
@@ -79,6 +80,9 @@ export type MessageHandler = (params: {
 export async function monitorSingleAccount(opts: MonitorDingtalkAccountOpts): Promise<void> {
   const { cfg, account, runtime, abortSignal, messageHandler } = opts;
   const { accountId } = account;
+  
+  // 保存 cfg 以便传递给 messageHandler
+  const clawdbotConfig = cfg;
   const log = runtime?.log ?? console.log;
 
   if (!account.clientId || !account.clientSecret) {
@@ -124,9 +128,15 @@ export async function monitorSingleAccount(opts: MonitorDingtalkAccountOpts): Pr
 
     // Register message handler
     console.log(`[DingTalk][${accountId}] 注册消息监听器...`);
+    console.log(`[DingTalk][${accountId}] TOPIC_ROBOT 值:`, TOPIC_ROBOT);
     client.registerCallbackListener(TOPIC_ROBOT, async (res: any) => {
       const messageId = res.headers?.messageId;
-      console.log(`[DingTalk][${accountId}] 收到 Stream 回调，messageId=${messageId}, hasData=${!!res.data}`);
+      console.log(`[DingTalk][${accountId}] ========== 收到 Stream 回调 ==========`);
+      console.log(`[DingTalk][${accountId}] messageId: ${messageId}`);
+      console.log(`[DingTalk][${accountId}] res.headers:`, JSON.stringify(res.headers, null, 2));
+      console.log(`[DingTalk][${accountId}] res.data 类型:`, typeof res.data);
+      console.log(`[DingTalk][${accountId}] res.data 长度:`, res.data?.length);
+      console.log(`[DingTalk][${accountId}] res 完整内容:`, JSON.stringify(res, null, 2));
 
       // 立即确认回调
       if (messageId) {
@@ -156,6 +166,7 @@ export async function monitorSingleAccount(opts: MonitorDingtalkAccountOpts): Pr
           sessionWebhook: data.sessionWebhook,
           runtime,
           log,
+          cfg: clawdbotConfig,
         });
         
         console.log(`[DingTalk][${accountId}] 消息处理完成`);
@@ -166,18 +177,20 @@ export async function monitorSingleAccount(opts: MonitorDingtalkAccountOpts): Pr
     console.log(`[DingTalk][${accountId}] 消息监听器注册完成`);
 
     // Connect to DingTalk Stream (同步等待，和老版本一致)
+    console.log(`[DingTalk][${accountId}] 开始连接钉钉 Stream...`);
     await client.connect();
-    log(`[DingTalk][${accountId}] 钉钉 Stream 客户端已连接`);
+    console.log(`[DingTalk][${accountId}] ========== 钉钉 Stream 客户端已连接 ==========`);
+    console.log(`[DingTalk][${accountId}] 等待接收消息...`);
 
     // Handle disconnection
     client.on('close', () => {
-      log(`[DingTalk][${accountId}] Connection closed`);
-      resolve();
+      log(`[DingTalk][${accountId}] Connection closed, will auto-reconnect...`);
+      // ✅ 不要 resolve()，让 autoReconnect 自动重连
     });
 
     client.on('error', (err: Error) => {
       log(`[DingTalk][${accountId}] Connection error: ${err.message}`);
-      reject(err);
+      // ✅ 不要 reject()，让 autoReconnect 自动重连
     });
   });
 }

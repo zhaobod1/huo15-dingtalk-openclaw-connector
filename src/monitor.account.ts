@@ -259,10 +259,11 @@ interface HandleMessageParams {
   sessionWebhook: string;
   runtime?: RuntimeEnv;
   log?: any;
+  cfg: ClawdbotConfig;
 }
 
 async function handleDingTalkMessage(params: HandleMessageParams): Promise<void> {
-  const { accountId, config, data, sessionWebhook, runtime, log } = params;
+  const { accountId, config, data, sessionWebhook, runtime, log, cfg } = params;
 
   const content = extractMessageContent(data);
   if (!content.text && content.imageUrls.length === 0 && content.downloadCodes.length === 0) return;
@@ -399,7 +400,9 @@ async function handleDingTalkMessage(params: HandleMessageParams): Promise<void>
   // 获取 oapi token
   // ===== 使用 SDK 的 dispatchReplyFromConfig =====
   try {
+    console.log(`[DingTalk][${accountId}] ========== 开始 SDK 处理 ==========`);
     const core = getDingtalkRuntime();
+    console.log(`[DingTalk][${accountId}] core 获取成功`);
     
     // 构建消息体（添加图片）
     let finalContent = userContent;
@@ -407,10 +410,14 @@ async function handleDingTalkMessage(params: HandleMessageParams): Promise<void>
       const imageMarkdown = imageLocalPaths.map(p => `![image](file://${p})`).join('\n');
       finalContent = finalContent ? `${finalContent}\n\n${imageMarkdown}` : imageMarkdown;
     }
+    console.log(`[DingTalk][${accountId}] finalContent: ${finalContent.substring(0, 100)}...`);
 
     // 构建 envelope 格式的消息
+    console.log(`[DingTalk][${accountId}] 开始构建 envelope...`);
     const envelopeOptions = core.channel.reply.resolveEnvelopeFormatOptions(cfg);
+    console.log(`[DingTalk][${accountId}] envelopeOptions:`, JSON.stringify(envelopeOptions));
     const envelopeFrom = isDirect ? senderId : `${data.conversationId}:${senderId}`;
+    console.log(`[DingTalk][${accountId}] envelopeFrom: ${envelopeFrom}`);
     
     const body = core.channel.reply.formatAgentEnvelope({
       channel: "DingTalk",
@@ -419,8 +426,10 @@ async function handleDingTalkMessage(params: HandleMessageParams): Promise<void>
       envelope: envelopeOptions,
       body: finalContent,
     });
+    console.log(`[DingTalk][${accountId}] body 构建完成: ${body.substring(0, 100)}...`);
 
     // 构建 inbound context
+    console.log(`[DingTalk][${accountId}] 开始构建 inbound context...`);
     const ctxPayload = core.channel.reply.finalizeInboundContext({
       Body: body,
       BodyForAgent: finalContent,
@@ -442,8 +451,10 @@ async function handleDingTalkMessage(params: HandleMessageParams): Promise<void>
       OriginatingChannel: "dingtalk" as const,
       OriginatingTo: accountId,
     });
+    console.log(`[DingTalk][${accountId}] ctxPayload 构建完成, SessionKey: ${ctxPayload.SessionKey}`);
 
     // 创建 reply dispatcher
+    console.log(`[DingTalk][${accountId}] 开始创建 reply dispatcher...`);
     const { dispatcher, replyOptions, markDispatchIdle } = createDingtalkReplyDispatcher({
       cfg,
       agentId: accountId,
@@ -455,23 +466,33 @@ async function handleDingTalkMessage(params: HandleMessageParams): Promise<void>
       messageCreateTimeMs: Date.now(),
       sessionWebhook: data.sessionWebhook,
     });
+    console.log(`[DingTalk][${accountId}] reply dispatcher 创建完成`);
+    console.log(`[DingTalk][${accountId}] replyOptions keys:`, Object.keys(replyOptions));
+    console.log(`[DingTalk][${accountId}] replyOptions.onModelSelected:`, typeof replyOptions.onModelSelected);
+    console.log(`[DingTalk][${accountId}] replyOptions.onPartialReply:`, typeof replyOptions.onPartialReply);
 
-    log?.info?.(`[DingTalk] 开始 SDK dispatch: session=${ctxPayload.SessionKey}`);
+    console.log(`[DingTalk][${accountId}] 开始 SDK dispatch: session=${ctxPayload.SessionKey}`);
 
     // 使用 SDK 的 dispatchReplyFromConfig
-    await core.channel.reply.withReplyDispatcher({
+    console.log(`[DingTalk][${accountId}] 调用 withReplyDispatcher...`);
+    const { queuedFinal, counts } = await core.channel.reply.withReplyDispatcher({
       dispatcher,
-      onSettled: () => markDispatchIdle(),
-      run: () =>
-        core.channel.reply.dispatchReplyFromConfig({
+      onSettled: () => {
+        console.log(`[DingTalk][${accountId}] onSettled 被调用`);
+        markDispatchIdle();
+      },
+      run: () => {
+        console.log(`[DingTalk][${accountId}] run 被调用，开始 dispatchReplyFromConfig...`);
+        return core.channel.reply.dispatchReplyFromConfig({
           ctx: ctxPayload,
           cfg,
           dispatcher,
           replyOptions,
-        }),
+        });
+      },
     });
 
-    log?.info?.(`[DingTalk] SDK dispatch 完成`);
+    console.log(`[DingTalk][${accountId}] SDK dispatch 完成: queuedFinal=${queuedFinal}, replies=${counts.final}`);
 
   } catch (err: any) {
     log?.error?.(`[DingTalk] SDK dispatch 失败: ${err.message}`);
