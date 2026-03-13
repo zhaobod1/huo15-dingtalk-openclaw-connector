@@ -45,10 +45,9 @@ openclaw gateway restart
 ```bash
 # 1. 克隆升级分支
 git clone --single-branch --branch feat/migrate-to-openclaw-sdk \
-    https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector.git \
-    dingtalk-openclaw-connector-beta
+    https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector.git
 
-cd dingtalk-openclaw-connector-beta
+cd dingtalk-openclaw-connector
 npm install
 
 # 2. 修改 OpenClaw 配置，添加本地插件路径
@@ -57,7 +56,7 @@ npm install
 #   "plugins": {
 #     "load": {
 #       "paths": [
-#         "/path/to/dingtalk-openclaw-connector-beta"
+#         "/path/to/dingtalk-openclaw-connector"
 #       ]
 #     }
 #   }
