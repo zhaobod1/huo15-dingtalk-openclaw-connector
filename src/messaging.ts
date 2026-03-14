@@ -744,16 +744,20 @@ export async function sendMediaToDingTalk(params: {
     const fileName = mediaUrl.split('/').pop() || 'file';
     
     if (mediaType === 'image') {
-      // 图片消息 - 使用 markdown 格式
-      return sendProactive(
+      // 图片消息 - 发送真正的图片消息
+      const result = await sendProactive(
         config,
         targetParam,
-        `![image](${mediaId})`,
-        { msgType: 'markdown', replyToId }
+        mediaId,
+        { msgType: 'image', replyToId }
       );
+      return {
+        ...result,
+        processQueryKey: result.processQueryKey || 'image-message-sent',
+      };
     }
     
-    // 统一处理所有媒体类型，发送包含下载链接的文本消息
+    // 对于视频、音频、文件，发送包含下载链接的文本消息
     const fs = await import('fs');
     const stats = fs.statSync(mediaUrl);
     const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
