@@ -616,15 +616,22 @@ export async function handleDingTalkMessage(params: HandleMessageParams): Promis
           console.log(`[DingTalk][${accountId}] onSettled 被调用`);
           markDispatchIdle();
         },
-        run: () => {
+        run: async () => {
           log?.info?.(`[DingTalk][${accountId}] run 被调用，开始 dispatchReplyFromConfig`);
           console.log(`[DingTalk][${accountId}] run 被调用`);
-          return core.channel.reply.dispatchReplyFromConfig({
+          console.log(`[DingTalk][${accountId}] ctxPayload.SessionKey=${ctxPayload.SessionKey}`);
+          console.log(`[DingTalk][${accountId}] ctxPayload.Body 长度=${ctxPayload.Body?.length || 0}`);
+          console.log(`[DingTalk][${accountId}] replyOptions keys=${Object.keys(replyOptions).join(',')}`);
+          
+          const result = await core.channel.reply.dispatchReplyFromConfig({
             ctx: ctxPayload,
             cfg,
             dispatcher,
             replyOptions,
           });
+          
+          console.log(`[DingTalk][${accountId}] dispatchReplyFromConfig 返回: queuedFinal=${result.queuedFinal}, counts=${JSON.stringify(result.counts)}`);
+          return result;
         },
       });
       console.log(`[DingTalk][${accountId}] withReplyDispatcher 返回成功`);

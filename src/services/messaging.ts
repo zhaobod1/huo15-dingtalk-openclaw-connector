@@ -355,6 +355,7 @@ export async function finishAICard(
         }),
       },
     },
+    cardUpdateOptions: { updateCardDataByKey: true },
   };
 
   log?.info?.(
