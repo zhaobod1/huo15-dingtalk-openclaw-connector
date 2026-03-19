@@ -232,10 +232,13 @@ if echo "$INSTALLED_PLUGINS" | grep -q "dingtalk-connector"; then
             TEMP_CLEANUP=$(mktemp)
             TEMP_FILES+=("$TEMP_CLEANUP")
             
-            # 删除 channels.dingtalk-connector 配置
-            if jq 'del(.channels."dingtalk-connector")' "$CONFIG_FILE" > "$TEMP_CLEANUP"; then
+            # 删除 channels.dingtalk-connector 和 plugins 相关配置
+            if jq 'del(.channels."dingtalk-connector") | 
+                  del(.plugins.entries."dingtalk-connector") |
+                  .plugins.allow = (.plugins.allow // [] | map(select(. != "dingtalk-connector")))' \
+                  "$CONFIG_FILE" > "$TEMP_CLEANUP"; then
                 mv "$TEMP_CLEANUP" "$CONFIG_FILE"
-                echo "✅ 配置文件已清理"
+                echo "✅ 配置文件已清理（channels + plugins）"
             else
                 echo "⚠️  无法清理配置文件，请手动检查"
                 rm -f "$TEMP_CLEANUP"
