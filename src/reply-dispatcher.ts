@@ -127,7 +127,7 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
    * 发送兜底错误消息，确保用户始终能收到反馈
    */
   const sendFallbackErrorMessage = async (
-    errorType: 'aiCardCreate' | 'mediaProcess' | 'sendMessage' | 'unknown',
+    errorType: 'mediaProcess' | 'sendMessage' | 'unknown',
     originalError?: string,
     forceSend: boolean = false
   ) => {
@@ -147,7 +147,6 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
     }
 
     const errorMessages = {
-      aiCardCreate: '⚠️ 消息处理延迟，正在尝试其他方式...',
       mediaProcess: '⚠️ 媒体文件处理失败，已发送文字回复',
       sendMessage: '⚠️ 消息发送失败，请稍后重试',
       unknown: '⚠️ 抱歉，处理您的请求时出错，请稍后重试',
@@ -251,18 +250,15 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
       );
       currentCardTarget = card;
       accumulatedText = "";
-      log.info(`[DingTalk][startStreaming] ✅ AI Card 创建成功`);
       
-      // ✅ 创建失败时发送兜底消息
-      if (!card) {
-        log.warn(`[DingTalk][startStreaming] AI Card 创建返回 null，发送兜底消息`);
-        await sendFallbackErrorMessage('aiCardCreate', 'Card creation returned null');
+      if (card) {
+        log.info(`[DingTalk][startStreaming] ✅ AI Card 创建成功`);
+      } else {
+        log.warn(`[DingTalk][startStreaming] AI Card 创建返回 null，静默降级到普通消息模式`);
       }
     } catch (error: any) {
-      log.error(`[DingTalk][startStreaming] ❌ AI Card 创建失败：${error?.message || String(error)}`);
+      log.error(`[DingTalk][startStreaming] ❌ AI Card 创建失败：${error?.message || String(error)}，静默降级到普通消息模式`);
       currentCardTarget = null;
-      // ✅ 发送兜底错误消息
-      await sendFallbackErrorMessage('aiCardCreate', error?.message || String(error));
     } finally {
       isCreatingCard = false;
     }
