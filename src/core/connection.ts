@@ -549,17 +549,26 @@ export async function monitorSingleAccount(
     } catch (error: any) {
       cleanup(); // 连接失败时清理资源
 
+      // 记录完整错误信息用于调试
+      logger.info(`连接失败，错误详情：`);
+      logger.info(`  - error.message: ${error.message}`);
+      logger.info(`  - error.response?.status: ${error.response?.status}`);
+      logger.info(`  - error.response?.data: ${JSON.stringify(error.response?.data || {})}`);
+      logger.info(`  - error.code: ${error.code}`);
+      logger.info(`  - error.stack: ${error.stack?.split('\n').slice(0, 3).join('\n')}`);
+
       // 处理 400 错误（请求参数错误）
-      if (error.response?.status === 400 || error.message?.includes("400")) {
+      if (error.response?.status === 400 || error.message?.includes("status code 400") || error.message?.includes("400")) {
         throw new Error(
           `[DingTalk][${accountId}] Bad Request (400):\n` +
             `  - clientId or clientSecret format is invalid\n` +
-            `  - clientId: ${clientIdStr} (type: ${typeof account.clientId})\n` +
-            `  - clientSecret: ${clientSecretStr.substring(0, 8)}... (type: ${typeof account.clientSecret})\n` +
+            `  - clientId: ${clientIdStr} (type: ${typeof account.clientId}, length: ${clientIdStr.length})\n` +
+            `  - clientSecret: ${clientSecretStr.substring(0, 8)}... (type: ${typeof account.clientSecret}, length: ${clientSecretStr.length})\n` +
             `  - Common issues:\n` +
             `    1. clientId/clientSecret must be strings, not numbers\n` +
             `    2. Remove any quotes or special characters\n` +
             `    3. Ensure credentials are from the correct DingTalk app\n` +
+            `    4. Check if clientId starts with 'ding' prefix\n` +
             `  - Error details: ${error.message}\n` +
             `  - Response data: ${JSON.stringify(error.response?.data || {})}`,
         );
