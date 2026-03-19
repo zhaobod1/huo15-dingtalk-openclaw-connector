@@ -165,7 +165,7 @@ function extractMessageContent(data: any): ExtractedMessage {
     }
     case 'audio': {
       const audioDownloadCode = data.content?.downloadCode || '';
-      const audioFileName = data.content?.fileName || 'audio';
+      const audioFileName = data.content?.fileName || 'audio.amr';
       const downloadCodes: string[] = [];
       const fileNames: string[] = [];
       if (audioDownloadCode) {
@@ -211,6 +211,16 @@ function extractMessageContent(data: any): ExtractedMessage {
         fileNames.push(fileName);
       }
       return { text: `[文件: ${fileName}]`, messageType: 'file', imageUrls: [], downloadCodes, fileNames, atDingtalkIds: [], atMobiles: [] };
+    }
+    case 'interactiveCard': {
+      // 交互式卡片消息（通常是文档分享）
+      const actionUrl = data.content?.biz_custom_action_url || '';
+      if (actionUrl) {
+        // 提取文档链接并格式化
+        const text = `[钉钉文档]\n🔗 ${actionUrl}`;
+        return { text, messageType: 'interactiveCard', imageUrls: [], downloadCodes: [], fileNames: [], atDingtalkIds: [], atMobiles: [] };
+      }
+      return { text: '[交互式卡片]', messageType: 'interactiveCard', imageUrls: [], downloadCodes: [], fileNames: [], atDingtalkIds: [], atMobiles: [] };
     }
     default:
       return { text: data.text?.content?.trim() || `[${msgtype}消息]`, messageType: msgtype, imageUrls: [], downloadCodes: [], fileNames: [], atDingtalkIds: [], atMobiles: [] };
