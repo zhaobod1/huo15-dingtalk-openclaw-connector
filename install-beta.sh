@@ -12,7 +12,26 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "🚀 开始安装钉钉连接器 v0.8.0-beta..."
+# ============ 参数解析 ============
+BRANCH="${1:-feat/migrate-to-openclaw-sdk}"  # 默认分支
+VERSION=""  # 将从 package.json 动态获取
+
+# 显示使用说明
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "使用方法: $0 [分支名]"
+    echo ""
+    echo "参数:"
+    echo "  分支名    要安装的 Git 分支 (默认: feat/migrate-to-openclaw-sdk)"
+    echo ""
+    echo "示例:"
+    echo "  $0                           # 安装默认分支"
+    echo "  $0 main                      # 安装 main 分支"
+    echo "  $0 feat/new-feature          # 安装指定功能分支"
+    exit 0
+fi
+
+echo "🚀 开始安装钉钉连接器..."
+echo "📌 分支: $BRANCH"
 
 # 检查 OpenClaw 是否已安装
 if ! command -v openclaw &> /dev/null; then
@@ -193,14 +212,31 @@ else
 fi
 
 # 克隆升级分支
-echo "📥 克隆升级分支..."
+echo "📥 克隆分支: $BRANCH..."
 cd /tmp
 rm -rf dingtalk-openclaw-connector-beta
-git clone --single-branch --branch feat/migrate-to-openclaw-sdk \
+
+if ! git clone --single-branch --branch "$BRANCH" \
     https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector.git \
-    dingtalk-openclaw-connector-beta
+    dingtalk-openclaw-connector-beta; then
+    echo "❌ 错误：克隆分支 '$BRANCH' 失败"
+    echo "💡 提示：请检查分支名是否正确"
+    exit 1
+fi
 
 cd dingtalk-openclaw-connector-beta
+
+# 从 package.json 获取版本号
+if command -v jq &> /dev/null; then
+    VERSION=$(jq -r '.version' package.json 2>/dev/null || echo "unknown")
+else
+    # 如果没有 jq，使用 grep 和 sed 提取版本号
+    VERSION=$(grep '"version"' package.json | sed 's/.*"version": "\(.*\)".*/\1/' || echo "unknown")
+fi
+
+echo "📦 版本: $VERSION"
+echo ""
+
 npm install
 
 # 卸载旧版本
@@ -296,20 +332,107 @@ fi
 
 # 重启 Gateway
 echo "🔄 重启 Gateway..."
-openclaw gateway restart
+if ! openclaw gateway restart; then
+    echo "⚠️  警告：Gateway 重启失败，请手动重启"
+    echo "   命令：openclaw gateway restart"
+fi
 
 echo ""
+echo "============================================"
 echo "✅ 安装完成！"
+echo "============================================"
 echo ""
-echo "📖 请查看 README_UPGRADE.md 了解新功能"
-echo "🐛 遇到问题请提交：https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector/issues"
+
+# ============ 验证结果 ============
+echo "🔍 验证安装结果..."
+echo ""
+
+# 1. 检查插件是否已安装
+PLUGIN_INSTALLED=false
+if openclaw plugins list 2>/dev/null | grep -q "dingtalk-connector"; then
+    PLUGIN_INSTALLED=true
+    echo "✅ 插件已安装"
+else
+    echo "❌ 插件未安装"
+fi
+
+# 2. 检查配置文件
+CONFIG_VALID=false
+if [ -f "$CONFIG_FILE" ]; then
+    if [ "$HAS_JQ" = true ]; then
+        CONNECTOR_ENABLED=$(jq -r '.channels."dingtalk-connector".enabled // false' "$CONFIG_FILE")
+        CONNECTOR_CLIENT_ID=$(jq -r '.channels."dingtalk-connector".clientId // empty' "$CONFIG_FILE")
+        
+        if [ "$CONNECTOR_ENABLED" = "true" ] && [ -n "$CONNECTOR_CLIENT_ID" ]; then
+            CONFIG_VALID=true
+            echo "✅ 配置文件有效"
+            echo "   - 插件已启用"
+            echo "   - clientId: ${CONNECTOR_CLIENT_ID:0:12}..."
+        else
+            echo "⚠️  配置文件需要完善"
+            if [ "$CONNECTOR_ENABLED" != "true" ]; then
+                echo "   - 插件未启用"
+            fi
+            if [ -z "$CONNECTOR_CLIENT_ID" ]; then
+                echo "   - 缺少 clientId"
+            fi
+        fi
+    else
+        echo "⚠️  无法验证配置（需要 jq 工具）"
+    fi
+else
+    echo "❌ 配置文件不存在"
+fi
+
+# 3. 检查 Gateway 状态
+GATEWAY_RUNNING=false
+if openclaw gateway status 2>/dev/null | grep -q "running"; then
+    GATEWAY_RUNNING=true
+    echo "✅ Gateway 运行中"
+else
+    echo "⚠️  Gateway 未运行"
+fi
+
+echo ""
+echo "============================================"
+echo "📊 安装总结"
+echo "============================================"
+echo "版本: $VERSION"
+echo "分支: $BRANCH"
+echo "插件安装: $([ "$PLUGIN_INSTALLED" = true ] && echo "✅" || echo "❌")"
+echo "配置有效: $([ "$CONFIG_VALID" = true ] && echo "✅" || echo "⚠️")"
+echo "Gateway: $([ "$GATEWAY_RUNNING" = true ] && echo "✅" || echo "⚠️")"
+echo "============================================"
+echo ""
+
+# 根据验证结果给出建议
+if [ "$PLUGIN_INSTALLED" = true ] && [ "$CONFIG_VALID" = true ] && [ "$GATEWAY_RUNNING" = true ]; then
+    echo "🎉 一切就绪！钉钉连接器已成功安装并配置完成"
+else
+    echo "⚠️  需要进一步操作："
+    
+    if [ "$PLUGIN_INSTALLED" = false ]; then
+        echo "   1. 插件未安装，请检查安装日志"
+    fi
+    
+    if [ "$CONFIG_VALID" = false ]; then
+        echo "   2. 配置未完成，请运行："
+        echo "      openclaw wizard"
+        echo "      或手动编辑：vim ~/.openclaw/openclaw.json"
+    fi
+    
+    if [ "$GATEWAY_RUNNING" = false ]; then
+        echo "   3. Gateway 未运行，请运行："
+        echo "      openclaw gateway restart"
+    fi
+fi
+
+echo ""
+echo "📖 更多信息："
+echo "   - 新功能说明：README_UPGRADE.md"
+echo "   - 问题反馈：https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector/issues"
 echo ""
 echo "💡 如需回滚："
 echo "   1. 恢复配置：cp $BACKUP_FILE ~/.openclaw/openclaw.json"
 echo "   2. 安装旧版本：openclaw plugins install @dingtalk-real-ai/dingtalk-connector@latest"
 echo ""
-if [ "$HAS_JQ" = false ]; then
-    echo "⚠️  提示：未安装 jq 工具，配置未自动迁移"
-    echo "   请手动检查配置：vim ~/.openclaw/openclaw.json"
-    echo "   或运行配置向导：openclaw wizard"
-fi

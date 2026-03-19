@@ -111,11 +111,18 @@ export function createSocketManager(
       // 2. 重新建立连接
       await client.connect();
       
-      // 3. 重置 socket 可用时间和重连计数
+      // 3. 验证连接是否真正建立（必须检查 socket 状态）
+      const socketState = client.socket?.readyState;
+      if (socketState !== 1) {
+        // socket 状态不是 OPEN (1)，说明连接未真正建立
+        throw new Error(`连接未建立，socket 状态=${socketState} (期望=1)`);
+      }
+      
+      // 4. 重置 socket 可用时间和重连计数
       lastSocketAvailableTime = Date.now();
       reconnectAttempts = 0;  // 重连成功，重置计数
       
-      log?.info?.(`[${accountId}] ✅ 重连成功`);
+      log?.info?.(`[${accountId}] ✅ 重连成功 (socket 状态=${socketState})`);
       
       // 调用外部回调
       if (onReconnect) {
