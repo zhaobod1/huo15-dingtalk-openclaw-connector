@@ -129,13 +129,13 @@ openclaw channels add
 - macOS / Linux：`~/.openclaw/openclaw.json`
 - Windows：`C:\Users\<你的用户名>\.openclaw\openclaw.json`
 
-```json5
+```json
 {
   "channels": {
     "dingtalk-connector": {
       "enabled": true,
-      "clientId": "dingxxxxxxxxx",        // 你的 AppKey
-      "clientSecret": "your_app_secret"   // 你的 AppSecret
+      "clientId": "dingxxxxxxxxx",
+      "clientSecret": "your_app_secret"
     }
   }
 }

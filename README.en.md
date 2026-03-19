@@ -129,13 +129,13 @@ Edit the configuration file:
 - macOS / Linux: `~/.openclaw/openclaw.json`
 - Windows: `C:\Users\<YourUserName>\.openclaw\openclaw.json`
 
-```json5
+```json
 {
   "channels": {
     "dingtalk-connector": {
       "enabled": true,
-      "clientId": "dingxxxxxxxxx",        // Your AppKey
-      "clientSecret": "your_app_secret"   // Your AppSecret
+      "clientId": "dingxxxxxxxxx",
+      "clientSecret": "your_app_secret"
     }
   }
 }
@@ -263,7 +263,7 @@ Both session routing/message policy options (including `pmpolicy` and `groupPoli
 
 Configure multiple bots connected to different agents:
 
-```json5
+```json
 {
   "channels": {
     "dingtalk-connector": {
