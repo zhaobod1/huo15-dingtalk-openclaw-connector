@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.3] - 2026-03-22
+
+### 重构 / Refactoring
+- ✅ **连接稳定性改进** - 优化 WebSocket 连接管理机制，增强长连接场景下的稳定性，减少异常断连情况  
+  **Connection stability improvement** - Improved WebSocket connection management mechanism, enhanced stability in long-lived connection scenarios, and reduced abnormal disconnections
+
+### 改进 / Improvements
+- ✅ **消息处理逻辑优化** - 重构消息处理流程，提升消息响应速度和处理可靠性，确保消息按序正确处理  
+  **Message processing logic optimization** - Refactored message processing flow to improve response speed and reliability, ensuring messages are processed correctly in order
+
 ## [0.8.1] - 2026-03-20
 
 ### 修复 / Fixes
