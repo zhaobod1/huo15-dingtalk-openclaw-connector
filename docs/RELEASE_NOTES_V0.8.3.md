@@ -8,9 +8,9 @@ This release fixes four issues: incorrect multi-Agent routing when `sharedMemory
 
 ## 🐛 修复 / Fixes
 
-- **AI 卡片流式更新失效 / AI Card Progressive Updates Not Working**  
-  修复了 AI 卡片无法逐步更新（progressive updates）的问题，表现为 AI 卡片等完整回复生成后才一次性出现，而非逐步显示。根因有两处：① `onReplyStart` 回调中 `await startStreaming()` 阻塞了 SDK 的回复生命周期启动，导致 AI Card 创建与 AI 生成文字串行而非并行；② 流式更新节流间隔设置为 1000ms 过于保守，对于 2 秒内完成的短回复几乎跳过所有中间更新。修复后，AI Card 创建改为 fire-and-forget 模式与 AI 生成并行，节流间隔调整为 500ms。  
-  Fixed an issue where AI card progressive updates were not working — the card would only appear after the full reply was generated instead of updating incrementally. Two root causes were identified: ① `await startStreaming()` in `onReplyStart` blocked the SDK reply lifecycle, causing AI Card creation and AI generation to run serially instead of in parallel; ② the streaming throttle interval of 1000ms was too conservative, skipping nearly all intermediate updates for short replies. After the fix, AI Card creation runs in fire-and-forget mode in parallel with AI generation, and the throttle interval is reduced to 500ms.
+- **AI 卡片流式更新延迟 / AI Card Progressive Updates Delayed**  
+  优化了 AI 卡片流式更新的响应速度。改动前，`onReplyStart` 中 `await startStreaming()` 串行等待 AI Card 创建完成（约 500ms~1s），期间收到的 partial reply 全部被丢弃，Card 创建好之后才开始流式更新；同时节流间隔 1000ms 过于保守，对于 2 秒内完成的短回复几乎跳过所有中间更新。改动后，AI Card 创建改为 fire-and-forget 模式与 AI 生成并行，`onPartialReply` 到来时等待 Card 就绪后立即更新，节流间隔调整为 500ms，流式内容能更早、更频繁地呈现给用户。  
+  Improved AI card progressive update responsiveness. Previously, `await startStreaming()` in `onReplyStart` waited serially for AI Card creation (~500ms–1s), discarding all partial replies received during that window; additionally, the 1000ms throttle interval was too conservative, skipping nearly all intermediate updates for short replies. After the fix, AI Card creation runs in fire-and-forget mode in parallel with AI generation; `onPartialReply` waits for the card to be ready and then updates immediately, with the throttle interval reduced to 500ms for earlier and more frequent streaming updates.
 
 - **消息重复处理（钉钉服务端重发穿透）/ Duplicate Message Processing on DingTalk Server Resend**  
   修复了 AI 处理耗时超过 ~60 秒时，钉钉服务端重发消息导致 Bot 重复处理的问题。根因是去重逻辑仅使用 `headers.messageId`（WebSocket 协议层投递 ID，每次重发都是新值），未检查 `data.msgId`（业务层消息 ID，重发时保持不变），导致重发消息穿透去重缓存。修复后引入双层去重：协议层（`headers.messageId`）拦截同一次投递的重复回调，业务层（`data.msgId`）拦截服务端重发，两个 ID 同时标记，任意一个命中即可拦截。  

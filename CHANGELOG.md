@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.8.3] - 2026-03-23
 
 ### 修复 / Fixes
-- 🐛 **AI 卡片流式更新失效** - 修复 AI 卡片无法逐步更新（progressive updates）的问题，表现为等完整回复生成后才一次性出现。修复后 AI Card 创建改为 fire-and-forget 模式与 AI 生成并行，节流间隔从 1000ms 调整为 500ms  
-  **AI card progressive updates not working** - Fixed AI card only appearing after full reply generation instead of updating incrementally. AI Card creation now runs in fire-and-forget mode in parallel with AI generation, throttle interval reduced from 1000ms to 500ms
+- ✅ **AI 卡片流式更新延迟优化** - 改动前 `onReplyStart` 串行等待 AI Card 创建（约 500ms~1s），期间 partial reply 全部丢弃，节流间隔 1000ms 也过于保守。改动后 AI Card 创建改为 fire-and-forget 与 AI 生成并行，节流间隔调整为 500ms，流式内容能更早更频繁地呈现  
+  **AI card progressive update latency improvement** - Previously `onReplyStart` awaited AI Card creation serially (~500ms–1s), discarding all partial replies during that window, with a 1000ms throttle too conservative for short replies. AI Card creation now runs fire-and-forget in parallel with AI generation; throttle reduced to 500ms for earlier and more frequent streaming updates
 
 - 🐛 **多 Agent 路由与 sharedMemoryAcrossConversations 冲突** - 修复配置 `sharedMemoryAcrossConversations: true` 时，多群分配不同 Agent 的 bindings 全部路由到同一 Agent 的问题。路由匹配现在使用专用的 `peerId`（真实 peer 标识，不受会话隔离配置影响），session 构建使用 `sessionPeerId`，两者职责严格分离  
   **Multi-Agent routing conflict with sharedMemoryAcrossConversations** - Fixed all bindings resolving to the same Agent when `sharedMemoryAcrossConversations: true`. Routing now uses dedicated `peerId` (real peer identifier, unaffected by session isolation config); session construction uses `sessionPeerId` with strict separation of responsibilities
