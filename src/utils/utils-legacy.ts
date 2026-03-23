@@ -4,6 +4,10 @@
 
 import type { DingtalkConfig, ResolvedDingtalkAccount } from '../types/index.ts';
 
+// SessionContext 和 buildSessionContext 统一由 session.ts 维护
+export type { SessionContext } from './session.ts';
+export { buildSessionContext } from './session.ts';
+
 // ============ 常量 ============
 
 /** 默认账号 ID，用于标记单账号模式（无 accounts 配置）时的内部标识 */
@@ -17,107 +21,6 @@ export const DINGTALK_API = 'https://api.dingtalk.com';
 export const DINGTALK_OAPI = 'https://oapi.dingtalk.com';
 
 // ============ 会话管理 ============
-
-/** OpenClaw 标准会话上下文 */
-export interface SessionContext {
-  channel: 'dingtalk-connector';
-  accountId: string;
-  chatType: 'direct' | 'group';
-  peerId: string;
-  conversationId?: string;
-  senderName?: string;
-  groupSubject?: string;
-}
-
-/**
- * 构建 OpenClaw 标准会话上下文
- * 遵循 OpenClaw session.dmScope 机制，让 Gateway 根据配置自动处理会话隔离
- */
-export function buildSessionContext(params: {
-  accountId: string;
-  senderId: string;
-  senderName?: string;
-  conversationType: string;
-  conversationId?: string;
-  groupSubject?: string;
-  separateSessionByConversation?: boolean;
-  groupSessionScope?: 'group' | 'group_sender';
-  sharedMemoryAcrossConversations?: boolean;
-}): SessionContext {
-  const {
-    accountId,
-    senderId,
-    senderName,
-    conversationType,
-    conversationId,
-    groupSubject,
-    separateSessionByConversation,
-    groupSessionScope,
-    sharedMemoryAcrossConversations,
-  } = params;
-  const isDirect = conversationType === '1';
-
-  // sharedMemoryAcrossConversations=true 时，所有会话共享记忆
-  if (sharedMemoryAcrossConversations === true) {
-    return {
-      channel: 'dingtalk-connector',
-      accountId,
-      chatType: isDirect ? 'direct' : 'group',
-      peerId: accountId, // 使用 accountId 作为 peerId，实现跨会话记忆共享
-      conversationId: isDirect ? undefined : conversationId,
-      senderName,
-      groupSubject: isDirect ? undefined : groupSubject,
-    };
-  }
-
-  // separateSessionByConversation=false 时，不区分单聊/群聊，按用户维度维护 session
-  if (separateSessionByConversation === false) {
-    return {
-      channel: 'dingtalk-connector',
-      accountId,
-      chatType: isDirect ? 'direct' : 'group',
-      peerId: senderId, // 只用 senderId，不区分会话
-      senderName,
-    };
-  }
-
-  // 以下是 separateSessionByConversation=true（默认）的逻辑
-  if (isDirect) {
-    // 单聊：peerId 为发送者 ID，由 OpenClaw Gateway 根据 dmScope 配置处理
-    return {
-      channel: 'dingtalk-connector',
-      accountId,
-      chatType: 'direct',
-      peerId: senderId,
-      senderName,
-    };
-  }
-
-  // 群聊：根据 groupSessionScope 配置决定会话隔离策略
-  if (groupSessionScope === 'group_sender') {
-    // 群内每个用户独立会话
-    return {
-      channel: 'dingtalk-connector',
-      accountId,
-      chatType: 'group',
-      peerId: `${conversationId}:${senderId}`,
-      conversationId,
-      senderName,
-      groupSubject,
-    };
-  }
-
-  // 默认：整个群共享一个会话
-  return {
-    channel: 'dingtalk-connector',
-    accountId,
-    chatType: 'group',
-    peerId: conversationId || senderId,
-    conversationId,
-    senderName,
-    groupSubject,
-  };
-}
 
 /**
  * 检查消息是否是新会话命令

@@ -540,7 +540,7 @@ export const dingtalkPlugin: ChannelPlugin<ResolvedDingtalkAccount> = {
 
       ctx.setStatus({ accountId: ctx.accountId, port: null });
       ctx.log?.info(
-        `startAccount------starting dingtalk-connector[${ctx.accountId}] (mode: stream)`,
+        `starting dingtalk-connector[${ctx.accountId}] (mode: stream)`,
       );
       try {
         return await monitorDingtalkProvider({
@@ -551,7 +551,7 @@ export const dingtalkPlugin: ChannelPlugin<ResolvedDingtalkAccount> = {
         });
       } catch (err: any) {
         // 打印真实错误到 stderr，绕过框架 log 系统（框架的 runtime.log 可能未初始化）
-        console.error(`[dingtalk-connector][${ctx.accountId}] startAccount error:`, err?.message ?? err, err?.stack);
+        ctx.log?.error(`[dingtalk-connector][${ctx.accountId}] startAccount error:`, err?.message ?? err, err?.stack);
         throw err;
       }
     },

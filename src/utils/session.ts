@@ -49,7 +49,6 @@ export function buildSessionContext(params: {
   const isDirect = conversationType === '1';
 
   // sharedMemoryAcrossConversations=true 时，所有会话共享记忆
-  // 通过将 peerId 设置为 accountId 来实现跨会话记忆共享
   if (sharedMemoryAcrossConversations === true) {
     return {
       channel: 'dingtalk-connector',
@@ -62,17 +61,20 @@ export function buildSessionContext(params: {
     };
   }
 
+  // separateSessionByConversation=false 时，不区分单聊/群聊，按用户维度维护 session
   if (separateSessionByConversation === false) {
     return {
       channel: 'dingtalk-connector',
       accountId,
       chatType: isDirect ? 'direct' : 'group',
-      peerId: senderId,
+      peerId: senderId, // 只用 senderId，不区分会话
       senderName,
     };
   }
 
+  // 以下是 separateSessionByConversation=true（默认）的逻辑
   if (isDirect) {
+    // 单聊：peerId 为发送者 ID，由 OpenClaw Gateway 根据 dmScope 配置处理
     return {
       channel: 'dingtalk-connector',
       accountId,
@@ -82,7 +84,9 @@ export function buildSessionContext(params: {
     };
   }
 
+  // 群聊：根据 groupSessionScope 配置决定会话隔离策略
   if (groupSessionScope === 'group_sender') {
+    // 群内每个用户独立会话
     return {
       channel: 'dingtalk-connector',
       accountId,
@@ -94,6 +98,7 @@ export function buildSessionContext(params: {
     };
   }
 
+  // 默认：整个群共享一个会话
   return {
     channel: 'dingtalk-connector',
     accountId,
