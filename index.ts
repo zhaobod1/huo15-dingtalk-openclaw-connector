@@ -65,13 +65,6 @@ function checkSdkVersion(api: OpenClawPluginApi): boolean {
 }
 
 export default function register(api: OpenClawPluginApi) {
-  // 版本兼容性检查
-  if (!checkSdkVersion(api)) {
-    console.error('[dingtalk-connector] 插件加载失败：OpenClaw SDK 版本不兼容');
-    console.error('[dingtalk-connector] 请按照上述提示升级 OpenClaw 或降级 dingtalk-connector');
-    // 不抛出异常，避免影响其他插件加载，但不注册任何功能
-    return;
-  }
   
   setDingtalkRuntime(api.runtime);
   api.registerChannel({ plugin: dingtalkPlugin });
