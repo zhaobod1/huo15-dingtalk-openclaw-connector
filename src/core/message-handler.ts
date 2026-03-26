@@ -62,7 +62,7 @@ import { QUEUE_BUSY_ACK_PHRASES } from "../utils/constants.ts";
 import { createDingtalkReplyDispatcher, normalizeSlashCommand } from "../reply-dispatcher.ts";
 import { getDingtalkRuntime } from "../runtime.ts";
 import { dingtalkHttp } from '../utils/http-client.ts';
-import { createLoggerFromConfig } from '../utils/logger.ts';
+清楚import { createLoggerFromConfig } from '../utils/index.ts';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -285,8 +285,8 @@ export async function downloadImageToFile(
   try {
     log?.info?.(`开始下载图片: ${downloadUrl.slice(0, 100)}...`);
     const resp = await dingtalkHttp.get(downloadUrl, {
-      proxy: false, // 禁用代理，避免 PAC 文件影响
-
+      // 遵循全局代理策略：默认禁用代理（避免 PAC 影响），DINGTALK_FORCE_PROXY=true 时走系统代理
+      proxy: process.env.DINGTALK_FORCE_PROXY === 'true' ? undefined : false,
       headers: {
         'Content-Type': undefined, // 删除默认的 Content-Type 请求头，让 OSS 签名验证通过
       },
@@ -390,7 +390,8 @@ export async function downloadFileToLocal(
   try {
     log?.info?.(`开始下载文件: ${fileName}`);
     const resp = await dingtalkHttp.get(downloadUrl, {
-      proxy: false, // 禁用代理，避免 PAC 文件影响
+      // 遵循全局代理策略：默认禁用代理（避免 PAC 影响），DINGTALK_FORCE_PROXY=true 时走系统代理
+      proxy: process.env.DINGTALK_FORCE_PROXY === 'true' ? undefined : false,
       headers: {
         'Content-Type': undefined, // 删除默认的 Content-Type 请求头，让 OSS 签名验证通过
       },

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.7] - 2026-03-26
+
+### 修复 / Fixes
+- 🐛 **账号 ID 大小写敏感修复** - 修复 `normalizeAccountId` 函数强制将账号 ID 转为小写（`.toLowerCase()`）导致驼峰命名账号（如 `zhizaoDashuIP`）无法匹配配置的问题。现在账号 ID 仅做 `trim()` 处理，保留原始大小写，与配置文件中的 key 严格匹配  
+  **Account ID case-sensitivity fix** - Fixed `normalizeAccountId` forcibly lowercasing account IDs, which caused camelCase account IDs (e.g., `zhizaoDashuIP`) to fail configuration lookup. Account IDs are now only trimmed, preserving original casing for strict matching against config keys
+
+- 🐛 **WebSocket 连接代理控制统一** - 修复 `src/core/connection.ts` 中 WebSocket 连接未遵循 `DINGTALK_FORCE_PROXY` 环境变量的问题，现在与 HTTP 请求保持一致的代理控制逻辑  
+  **Unified proxy control for WebSocket connections** - Fixed WebSocket connections not respecting the `DINGTALK_FORCE_PROXY` environment variable; proxy control is now consistent with HTTP requests
+
+- 🐛 **媒体下载代理控制统一** - 修复 `src/core/message-handler.ts` 中图片/文件下载时代理配置与 HTTP 客户端不一致的问题，确保所有媒体下载请求统一遵循代理控制策略  
+  **Unified proxy control for media downloads** - Fixed inconsistent proxy configuration for image/file downloads; all media download requests now follow the unified proxy control policy
+
 ## [0.8.6] - 2026-03-24
 
 ### 改进 / Improvements
