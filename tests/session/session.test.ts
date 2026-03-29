@@ -64,6 +64,8 @@ describe('session management helpers', () => {
         peerId: 'cid-1',
         sessionPeerId: 'u-1',
         senderName: 'Alice',
+        conversationId: 'cid-1',
+        groupSubject: 'Test Group',
       });
     });
 

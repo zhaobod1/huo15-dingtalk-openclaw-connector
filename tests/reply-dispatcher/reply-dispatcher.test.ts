@@ -96,7 +96,7 @@ describe("reply-dispatcher", () => {
   });
 
   it("normalizes slash commands", async () => {
-    const { normalizeSlashCommand } = await import("../../src/reply-dispatcher");
+    const { normalizeSlashCommand } = await import("../../src/utils/session");
     expect(normalizeSlashCommand("/reset")).toBe("/new");
     expect(normalizeSlashCommand("新会话")).toBe("/new");
     expect(normalizeSlashCommand("hello")).toBe("hello");
