@@ -1,9 +1,9 @@
 {
-  "id": "dingtalk-connector",
-  "name": "DingTalk Channel",
-  "version": "0.8.12",
+  "id": "huo15-dingtalk-connector-pro",
+  "name": "Huo15 DingTalk Connector Pro",
+  "version": "1.0.0",
   "description": "DingTalk (钉钉) messaging channel via Stream mode with AI Card streaming",
-  "author": "DingTalk Real Team",
+  "author": "火一五信息科技有限公司",
   "main": "index.ts",
   "channels": [
     "dingtalk-connector"
