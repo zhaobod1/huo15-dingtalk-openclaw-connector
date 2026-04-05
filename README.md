@@ -1,36 +1,22 @@
----
-name: huo15-dingtalk-connector-pro
-description: 火一五定制版钉钉 OpenClaw 连接器 - 支持记忆系统集成、会话管理、AI Card 流式响应
-dependencies:
-  required: []
----
-
 # 🔔 huo15-dingtalk-connector-pro
 
-> 火一五定制版钉钉 OpenClaw 连接器
-
-[![版本](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/huo15/huo15-dingtalk-connector-pro)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-
-## 📖 目录
-
-- [特性](#-特性)
-- [快速开始](#-快速开始)
-- [与官方版区别](#-与官方版区别)
-- [配置说明](#-配置说明)
-- [版本历史](#-版本历史)
-- [相关链接](#-相关链接)
+> **作者**: 火一五信息科技有限公司
+> **版本**: v1.0.0
+> **参考**: [dingtalk-openclaw-connector](https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector) v0.8.12
+> **触发词**: 钉钉、钉钉连接器、dingtalk
 
 ---
 
-## ✨ 特性
+## 一、简介
 
-基于官方 [dingtalk-openclaw-connector](https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector) v0.8.12 定制
+火一五定制版钉钉 OpenClaw 连接器，基于官方 dingtalk-openclaw-connector v0.8.12 定制，支持 huo15-memory-evolution 记忆系统集成。
+
+### 核心特性
 
 | 特性 | 说明 |
 |------|------|
 | 🤖 **记忆系统集成** | 支持 huo15-memory-evolution 记忆系统 |
-| 💬 **AI Card 流式响应** | 打字机效果，实时显示 AI 回复 |
+| 💬 **AI Card 流式响应** | 打字机效果，实时流式显示回复 |
 | 🔒 **会话持久化** | 同一用户的多轮对话共享上下文 |
 | 🎯 **会话隔离** | 按单聊/群聊/群区分 session |
 | ⏰ **超时自动新会话** | 默认 30 分钟无活动自动开启新对话 |
@@ -41,14 +27,14 @@ dependencies:
 
 ---
 
-## ⚡ 快速开始
+## 二、快速开始
 
-### 前置要求
+### 2.1 前置要求
 
 - OpenClaw 已安装并运行
 - 钉钉企业账号
 
-### 安装
+### 2.2 安装
 
 ```bash
 # 克隆仓库
@@ -58,11 +44,11 @@ cd huo15-dingtalk-connector-pro
 # 安装依赖
 npm install
 
-# 以链接模式安装（方便修改代码后实时生效）
+# 以链接模式安装
 openclaw plugins install -l .
 ```
 
-### 配置
+### 2.3 配置
 
 1. 获取钉钉凭证
    - 访问 [钉钉开放平台](https://open-dev.dingtalk.com/)
@@ -92,15 +78,12 @@ openclaw channels add
 }
 ```
 
-3. 重启 Gateway
+### 2.4 重启验证
 
 ```bash
+# 重启 Gateway
 openclaw gateway restart
-```
 
-### 验证
-
-```bash
 # 检查插件状态
 openclaw plugins list
 
@@ -110,21 +93,20 @@ openclaw logs --follow
 
 ---
 
-## 🔄 与官方版区别
+## 三、与官方版区别
 
 | 功能 | 官方版 | 定制版 |
 |------|--------|--------|
 | 基础功能 | ✅ | ✅ |
 | 记忆系统集成 | ❌ | ✅ huo15-memory-evolution |
-| 会话记忆持久化 | ✅ | ✅ |
 | AI Card 流式响应 | ✅ | ✅ |
 | 多 Agent 路由 | ✅ | ✅ |
 
 ---
 
-## ⚙️ 配置说明
+## 四、配置说明
 
-### 基础配置
+### 4.1 基础配置
 
 ```json
 {
@@ -138,7 +120,7 @@ openclaw logs --follow
 }
 ```
 
-### 高级配置
+### 4.2 高级配置
 
 | 参数 | 说明 | 默认值 |
 |------|------|---------|
@@ -149,7 +131,7 @@ openclaw logs --follow
 
 ---
 
-## 📜 版本历史
+## 五、版本历史
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
@@ -157,7 +139,7 @@ openclaw logs --follow
 
 ---
 
-## 🔗 相关链接
+## 六、相关链接
 
 - **官方版**: https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector
 - **OpenClaw**: https://openclaw.ai
@@ -166,6 +148,4 @@ openclaw logs --follow
 
 ---
 
-## 📄 License
-
-MIT License - 火一五信息科技有限公司出品
+*火一五信息科技有限公司出品*
