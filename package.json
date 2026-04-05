@@ -1,7 +1,7 @@
 {
   "name": "@huo15/dingtalk-connector-pro",
-  "version": "1.0.1",
-  "description": "\u706b\u4e00\u4e94\u5b9a\u5236\u7248\u9489\u9489 OpenClaw \u8fde\u63a5\u5668 - \u652f\u6301\u8bb0\u5fc6\u7cfb\u7edf\u96c6\u6210\u3001\u4f1a\u8bdd\u7ba1\u7406\u3001AI Card \u6d41\u5f0f\u54cd\u5e94",
+  "version": "1.0.2",
+  "description": "火一五定制版钉钉 OpenClaw 连接器 - 支持记忆系统集成、会话管理、AI Card 流式响应",
   "main": "index.ts",
   "type": "module",
   "scripts": {
