@@ -88,7 +88,7 @@
   },
   "files": [
     "dist",
-    "./hooks",
+    "hooks",
     "package.json"
   ]
 }
