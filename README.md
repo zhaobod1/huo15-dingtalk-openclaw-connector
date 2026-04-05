@@ -1,3 +1,26 @@
+<div align="center">
+
+<img src="https://tools.huo15.com/uploads/images/system/logo-colours.png" alt="火一五Logo" style="width: 120px; height: auto; display: inline; margin: 0;" />
+
+</div>
+
+<div align="center">
+
+**打破信息孤岛，用一套系统驱动企业增长**
+**加速企业用户向全场景人工智能机器人转变**
+
+</div>
+
+<div align="center">
+
+| 🏫 教学机构 | 👨‍🏫 讲师 | 📧 联系方式         | 💬 QQ群      | 📺 配套视频                         |
+|:-----------:|:--------:|:------------------:|:-----------:|:-----------------------------------:|
+| 逸寻智库 | Job | support@huo15.com | 1093992108  | [📺 B站视频](https://space.bilibili.com/400418085) |
+
+</div>
+
+---
+
 # 🔔 huo15-dingtalk-connector-pro
 
 > **作者**: 火一五信息科技有限公司
@@ -148,4 +171,16 @@ openclaw logs --follow
 
 ---
 
-*火一五信息科技有限公司出品*
+<div align="center">
+
+**公司名称：** 青岛火一五信息科技有限公司
+
+**联系邮箱：** postmaster@huo15.com | **QQ群：** 1093992108
+
+---
+
+**关注逸寻智库公众号，获取更多资讯**
+
+<img src="https://tools.huo15.com/uploads/images/system/qrcode_yxzk.jpg" alt="逸寻智库公众号二维码" style="width: 200px; height: auto; margin: 10px 0;" />
+
+</div>
