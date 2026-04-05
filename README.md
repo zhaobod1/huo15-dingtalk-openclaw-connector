@@ -6,8 +6,8 @@
 
 <div align="center">
 
-<h3>打破信息孤岛，用一套系统驱动企业增长</h3>
-<h3>加速企业用户向全场景人工智能机器人转变</h3>
+**打破信息孤岛，用一套系统驱动企业增长**
+**加速企业用户向全场景人工智能机器人转变**
 
 </div>
 
@@ -32,9 +32,11 @@
 
 ## 一、简介
 
-火一五定制版钉钉 OpenClaw 连接器，基于官方 dingtalk-openclaw-connector v0.8.12 定制，支持 huo15-memory-evolution 记忆系统集成。
+火一五定制版钉钉 OpenClaw 连接器，基于官方 dingtalk-openclaw-connector v0.8.12 定制，支持 huo15-memory-evolution 记忆系统集成和 Claude Code 能力增强。
 
-### 核心特性
+---
+
+## 二、核心特性
 
 | 特性 | 说明 |
 |------|------|
@@ -50,14 +52,14 @@
 
 ---
 
-## 二、快速开始
+## 三、快速开始
 
-### 2.1 前置要求
+### 3.1 前置要求
 
 - OpenClaw 已安装并运行
 - 钉钉企业账号
 
-### 2.2 安装
+### 3.2 安装
 
 ```bash
 # 克隆仓库
@@ -71,7 +73,7 @@ npm install
 openclaw plugins install -l .
 ```
 
-### 2.3 配置
+### 3.3 配置
 
 1. 获取钉钉凭证
    - 访问 [钉钉开放平台](https://open-dev.dingtalk.com/)
@@ -86,13 +88,12 @@ openclaw channels add
 
 # 方式二：直接编辑配置文件
 # macOS: ~/.openclaw/openclaw.json
-# Windows: C:\Users\<用户名>\.openclaw\openclaw.json
 ```
 
 ```json
 {
   "channels": {
-    "huo15-dingtalk-connector-pro": {
+    "dingtalk-connector": {
       "enabled": true,
       "clientId": "你的AppKey",
       "clientSecret": "你的AppSecret"
@@ -101,7 +102,7 @@ openclaw channels add
 }
 ```
 
-### 2.4 重启验证
+### 3.4 重启验证
 
 ```bash
 # 重启 Gateway
@@ -116,53 +117,75 @@ openclaw logs --follow
 
 ---
 
-## 三、与官方版区别
+## 四、完整功能列表
+
+### 4.1 基础功能
+
+- **AI Card 流式响应** - 打字机效果，实时显示 AI 回复
+- **会话管理** - 多轮对话共享上下文
+- **会话隔离** - 按单聊/群聊/群区分 session
+- **手动/自动会话重置** - 发送 /new 或 30分钟无活动自动新会话
+- **图片自动上传** - 自动上传到钉钉
+- **富媒体接收** - JPEG/PNG 图片，支持视觉模型
+- **文件附件** - 解析 .docx, .pdf, 文本, 二进制文件
+- **音频消息** - 支持 mp3, wav, amr, ogg 格式
+- **钉钉文档 API** - 创建、追加、搜索、列出文档
+- **多 Agent 路由** - 多个 bot 连接不同 agent
+- **Markdown 表格转换** - 自动转换为钉钉兼容格式
+
+---
+
+## 五、开发计划
+
+### 5.1 融合火一五记忆进化系统
+
+- [ ] 将 huo15-memory-evolution 集成到钉钉连接器
+- [ ] 实现会话记忆持久化
+- [ ] 支持 user/feedback/project/reference 四类记忆
+- [ ] 实现 Auto Capture 自动捕获高光时刻
+- [ ] 实现 Dream Agent 每日日志提炼
+
+### 5.2 融合 Claude Code 能力
+
+- [ ] 实现 findRelevantMemories 智能记忆检索
+- [ ] 实现 CLAUDE.md 项目级指令注入
+- [ ] 实现 Manifest pre-inject
+- [ ] 实现 Forked extraction 后台提取
+- [ ] 实现 Before recommending 规范
+
+---
+
+## 六、与官方版区别
 
 | 功能 | 官方版 | 定制版 |
 |------|--------|--------|
 | 基础功能 | ✅ | ✅ |
 | 记忆系统集成 | ❌ | ✅ huo15-memory-evolution |
+| Claude Code 能力 | ❌ | ✅ 进行中 |
 | AI Card 流式响应 | ✅ | ✅ |
 | 多 Agent 路由 | ✅ | ✅ |
 
 ---
 
-## 四、配置说明
+## 七、项目结构
 
-### 4.1 基础配置
-
-```json
-{
-  "channels": {
-    "huo15-dingtalk-connector-pro": {
-      "enabled": true,
-      "clientId": "dingxxxxxxxxx",
-      "clientSecret": "your_app_secret"
-    }
-  }
-}
+```
+huo15-dingtalk-connector-pro/
+├── src/
+│   ├── core/           # 核心连接器逻辑
+│   ├── services/       # 钉钉 API 服务
+│   ├── utils/         # 工具函数
+│   └── types/          # TypeScript 类型定义
+├── docs/
+│   └── images/        # 文档图片
+├── openclaw.plugin.json # 插件清单
+├── package.json        # npm 依赖
+└── LICENSE
 ```
 
-### 4.2 高级配置
-
-| 参数 | 说明 | 默认值 |
-|------|------|---------|
-| `enabled` | 是否启用 | `true` |
-| `clientId` | AppKey | - |
-| `clientSecret` | AppSecret | - |
-| `sessionTimeout` | 会话超时时间（分钟） | `30` |
-
 ---
 
-## 五、版本历史
-
-| 版本 | 日期 | 更新内容 |
-|------|------|---------|
-| **v1.0.0** | 2026-04-05 | 初始定制版本，基于官方 v0.8.12 |
-
----
-
-## 六、相关链接
+## 八、相关链接
 
 - **官方版**: https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector
 - **OpenClaw**: https://openclaw.ai
