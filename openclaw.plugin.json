@@ -1,9 +1,9 @@
 {
   "id": "@huo15/dingtalk-openclaw-connector",
   "name": "Huo15 DingTalk Connector Pro",
-  "version": "1.0.0",
-  "description": "DingTalk (钉钉) messaging channel via Stream mode with AI Card streaming",
-  "author": "火一五信息科技有限公司",
+  "version": "1.0.3",
+  "description": "\u706b\u4e00\u4e94\u5b9a\u5236\u7248\u9489\u9489 OpenClaw \u8fde\u63a5\u5668",
+  "author": "\u706b\u4e00\u4e94\u4fe1\u606f\u79d1\u6280\u6709\u9650\u516c\u53f8",
   "main": "index.ts",
   "channels": [
     "dingtalk-connector"
@@ -15,7 +15,7 @@
   "channelConfigs": {
     "dingtalk-connector": {
       "label": "DingTalk",
-      "description": "钉钉企业内部机器人，使用 Stream 模式，无需公网 IP，支持 AI Card 流式响应。",
+      "description": "\u9489\u9489\u4f01\u4e1a\u5185\u90e8\u673a\u5668\u4eba\uff0c\u4f7f\u7528 Stream \u6a21\u5f0f\uff0c\u65e0\u9700\u516c\u7f51 IP\uff0c\u652f\u6301 AI Card \u6d41\u5f0f\u54cd\u5e94\u3002",
       "schema": {
         "type": "object",
         "properties": {
@@ -458,39 +458,39 @@
       "uiHints": {
         "channels.dingtalk-connector.clientId": {
           "label": "Client ID (AppKey)",
-          "help": "钉钉应用的 AppKey / Client ID",
+          "help": "\u9489\u9489\u5e94\u7528\u7684 AppKey / Client ID",
           "sensitive": true
         },
         "channels.dingtalk-connector.clientSecret": {
           "label": "Client Secret (AppSecret)",
-          "help": "钉钉应用的 AppSecret / Client Secret",
+          "help": "\u9489\u9489\u5e94\u7528\u7684 AppSecret / Client Secret",
           "sensitive": true
         },
         "channels.dingtalk-connector.dmPolicy": {
           "label": "DM Policy",
-          "help": "单聊策略：open（开放）、pairing（配对）、allowlist（白名单）"
+          "help": "\u5355\u804a\u7b56\u7565\uff1aopen\uff08\u5f00\u653e\uff09\u3001pairing\uff08\u914d\u5bf9\uff09\u3001allowlist\uff08\u767d\u540d\u5355\uff09"
         },
         "channels.dingtalk-connector.groupPolicy": {
           "label": "Group Policy",
-          "help": "群聊策略：open（开放）、allowlist（白名单）、disabled（禁用）"
+          "help": "\u7fa4\u804a\u7b56\u7565\uff1aopen\uff08\u5f00\u653e\uff09\u3001allowlist\uff08\u767d\u540d\u5355\uff09\u3001disabled\uff08\u7981\u7528\uff09"
         },
         "channels.dingtalk-connector.requireMention": {
           "label": "Require @Mention",
-          "help": "群聊中是否需要 @机器人 才响应"
+          "help": "\u7fa4\u804a\u4e2d\u662f\u5426\u9700\u8981 @\u673a\u5668\u4eba \u624d\u54cd\u5e94"
         },
         "channels.dingtalk-connector.debug": {
           "label": "Debug Mode",
-          "help": "启用调试日志",
+          "help": "\u542f\u7528\u8c03\u8bd5\u65e5\u5fd7",
           "advanced": true
         },
         "channels.dingtalk-connector.endpoint": {
           "label": "Gateway Endpoint",
-          "help": "自定义 DWClient 网关地址（高级）",
+          "help": "\u81ea\u5b9a\u4e49 DWClient \u7f51\u5173\u5730\u5740\uff08\u9ad8\u7ea7\uff09",
           "advanced": true
         },
         "channels.dingtalk-connector.accounts": {
           "label": "Accounts",
-          "help": "多账号配置，每个 key 是账号 ID"
+          "help": "\u591a\u8d26\u53f7\u914d\u7f6e\uff0c\u6bcf\u4e2a key \u662f\u8d26\u53f7 ID"
         }
       }
     }
