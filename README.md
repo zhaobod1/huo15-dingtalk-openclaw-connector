@@ -21,11 +21,12 @@
 
 ---
 
-# 🔔 huo15-dingtalk-connector-pro
+# 🔔 @huo15/dingtalk-openclaw-connector
 
 > **作者**: 火一五信息科技有限公司
 > **版本**: v1.0.0
 > **参考**: [dingtalk-openclaw-connector](https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector) v0.8.12
+> **npm**: [@huo15/dingtalk-openclaw-connector](https://www.npmjs.com/package/@huo15/dingtalk-openclaw-connector)
 > **触发词**: 钉钉、钉钉连接器、dingtalk
 
 ---

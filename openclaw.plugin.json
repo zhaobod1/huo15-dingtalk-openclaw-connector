@@ -1,5 +1,5 @@
 {
-  "id": "huo15-dingtalk-connector-pro",
+  "id": "@huo15/dingtalk-openclaw-connector",
   "name": "Huo15 DingTalk Connector Pro",
   "version": "1.0.0",
   "description": "DingTalk (钉钉) messaging channel via Stream mode with AI Card streaming",
