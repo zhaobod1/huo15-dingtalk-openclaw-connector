@@ -1,3 +1,7 @@
+# @huo15/dingtalk-openclaw-connector
+
+---
+
 <div align="center">
 
 <img src="https://tools.huo15.com/uploads/images/system/logo-colours.png" alt="火一五Logo" style="width: 120px; height: auto; display: inline; margin: 0;" />
@@ -20,8 +24,6 @@
 </div>
 
 ---
-
-# 🔔 @huo15/dingtalk-openclaw-connector
 
 > **作者**: 火一五信息科技有限公司
 > **版本**: v1.0.0
@@ -64,13 +66,13 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/huo15/huo15-dingtalk-connector-pro.git
-cd huo15-dingtalk-connector-pro
+git clone https://github.com/zhaobod1/huo15-dingtalk-openclaw-connector.git
+cd huo15-dingtalk-openclaw-connector
 
 # 安装依赖
 npm install
 
-# 以链接模式安装
+# 以链接模式安装（方便开发调试）
 openclaw plugins install -l .
 ```
 
@@ -81,15 +83,7 @@ openclaw plugins install -l .
    - 创建企业内部应用
    - 获取 AppKey 和 AppSecret
 
-2. 配置连接器
-
-```bash
-# 方式一：使用配置向导
-openclaw channels add
-
-# 方式二：直接编辑配置文件
-# macOS: ~/.openclaw/openclaw.json
-```
+2. 配置连接器（编辑 `~/.openclaw/openclaw.json`）
 
 ```json
 {
@@ -171,16 +165,16 @@ openclaw logs --follow
 ## 七、项目结构
 
 ```
-huo15-dingtalk-connector-pro/
+huo15-dingtalk-openclaw-connector/
 ├── src/
 │   ├── core/           # 核心连接器逻辑
 │   ├── services/       # 钉钉 API 服务
-│   ├── utils/         # 工具函数
+│   ├── utils/          # 工具函数
 │   └── types/          # TypeScript 类型定义
 ├── docs/
-│   └── images/        # 文档图片
+│   └── images/         # 文档图片
 ├── openclaw.plugin.json # 插件清单
-├── package.json        # npm 依赖
+├── package.json         # npm 依赖
 └── LICENSE
 ```
 
@@ -189,6 +183,7 @@ huo15-dingtalk-connector-pro/
 ## 八、相关链接
 
 - **官方版**: https://github.com/DingTalk-Real-AI/dingtalk-openclaw-connector
+- **Fork 仓库**: https://github.com/zhaobod1/huo15-dingtalk-openclaw-connector
 - **OpenClaw**: https://openclaw.ai
 - **火一五记忆系统**: https://clawhub.ai/jobzhao15/huo15-memory-evolution
 - **钉钉开放平台**: https://open-dev.dingtalk.com/
