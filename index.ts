@@ -32,7 +32,8 @@ export default function register(api: OpenClawPluginApi) {
   registerGatewayMethods(api);
 
   // 注册发送文件工具（绕过 MEDIA: 标记限制）
-  api.registerTool({
+  try {
+    api.registerTool({
     name: "send_dingtalk_file",
     label: "Send DingTalk File",
     description: "通过钉钉发送本地文件给当前会话用户。当 agent 生成文件后，使用此工具发送给用户。文件路径需为绝对路径。",
@@ -87,4 +88,8 @@ export default function register(api: OpenClawPluginApi) {
       }
     }
   });
+  } catch (err: any) {
+    const fsSync = await import("fs");
+    fsSync.appendFileSync("/tmp/dingtalk-tool-error.log", `${new Date().toISOString()} registerTool failed: ${err.message}\n${err.stack}\n`);
+  }
 }
