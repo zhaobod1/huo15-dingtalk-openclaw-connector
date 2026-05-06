@@ -324,6 +324,8 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
           target
         );
         
+        // ✅ 将 MEDIA: 前缀转换为 [DINGTALK_FILE] 标记
+        finalText = finalText.replace(/^MEDIA:(.+)$/gm, '[DINGTALK_FILE]$1[/DINGTALK_FILE]');
         // ✅ 处理裸露的本地文件路径（绕过 OpenClaw SDK 的 bug）
         log.info(`[DingTalk][closeStreaming] 准备调用 processRawMediaPaths`);
         const { processRawMediaPaths } = await import('./services/media');
@@ -397,6 +399,8 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
         
         // ✅ 在 final 响应时，先处理裸露的文件路径
         if (info?.kind === "final" && text.trim()) {
+          // ✅ 将 MEDIA: 前缀转换为 [DINGTALK_FILE] 标记
+          text = text.replace(/^MEDIA:(.+)$/gm, '[DINGTALK_FILE]$1[/DINGTALK_FILE]');
           const target: AICardTarget = isDirect
             ? { type: 'user', userId: senderId }
             : { type: 'group', openConversationId: conversationId };
