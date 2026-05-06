@@ -289,10 +289,40 @@ export const dingtalkPlugin: ChannelPlugin<ResolvedDingtalkAccount> = {
     textChunkLimit: 2000,
     sendText: async ({ cfg, to, text, accountId, replyToId, threadId }) => {
       const account = resolveDingtalkAccount({ cfg, accountId });
+      const logger = createLogger(account.config?.debug ?? false, 'DingTalk:SendText');
+
+      // 解析 MEDIA: 前缀，自动发送文件
+      const mediaRegex = /^MEDIA:(.+)$/gmi;
+      const mediaMatches = [...text.matchAll(mediaRegex)];
+      let cleanText = text.replace(mediaRegex, '').trim();
+
+      for (const match of mediaMatches) {
+        const mediaPath = match[1].trim();
+        logger.info('检测到 MEDIA: 标记，发送文件:', mediaPath);
+        try {
+          await sendMediaToDingTalk({
+            config: account.config,
+            target: to,
+            mediaUrl: mediaPath,
+            replyToId,
+          });
+        } catch (err: any) {
+          logger.error('MEDIA 发送失败:', err.message);
+        }
+      }
+
+      if (!cleanText && mediaMatches.length > 0) {
+        return {
+          channel: "dingtalk-connector",
+          messageId: "media-sent",
+          conversationId: to,
+        };
+      }
+
       const result = await sendTextToDingTalk({
         config: account.config,
         target: to,
-        text,
+        text: cleanText,
         replyToId,
       });
       return {
