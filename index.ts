@@ -89,7 +89,6 @@ export default function register(api: OpenClawPluginApi) {
     }
   });
   } catch (err: any) {
-    const fsSync = await import("fs");
-    fsSync.appendFileSync("/tmp/dingtalk-tool-error.log", `${new Date().toISOString()} registerTool failed: ${err.message}\n${err.stack}\n`);
+    fs.appendFileSync("/tmp/dingtalk-tool-error.log", `${new Date().toISOString()} registerTool failed: ${err.message}\n${err.stack}\n`);
   }
 }
