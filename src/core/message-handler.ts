@@ -1470,6 +1470,9 @@ export async function handleDingTalkMessageInternal(params: HandleMessageParams)
         if (oapiToken) {
           finalText = await processLocalImages(finalText, oapiToken, log);
 
+          // ✅ 将 MEDIA: 前缀转换为 [DINGTALK_FILE] 标记
+          finalText = finalText.replace(/^MEDIA:(.+)$/gm, '[DINGTALK_FILE]$1[/DINGTALK_FILE]');
+
           const mediaTarget: AICardTarget = isDirect
             ? { type: 'user', userId: senderId }
             : { type: 'group', openConversationId: data.conversationId };
