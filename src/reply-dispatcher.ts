@@ -325,11 +325,6 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
           target
         );
         
-        // ✅ 将 MEDIA: 前缀转换为 [DINGTALK_FILE] 标记（同时展开 ~）
-        finalText = finalText.replace(/^MEDIA:(.+)$/gm, (_: string, path: string) => {
-          const expanded = path.trim().replace(/^~/, process.env.HOME || '/Users/cuibiao');
-          return `[DINGTALK_FILE]${expanded}[/DINGTALK_FILE]`;
-        });
         // ✅ 处理裸露的本地文件路径（绕过 OpenClaw SDK 的 bug）
         log.info(`[DingTalk][closeStreaming] 准备调用 processRawMediaPaths`);
         const { processRawMediaPaths } = await import('./services/media');
@@ -400,40 +395,9 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
         let text = payload.text ?? "";
         
         log.info(`[DingTalk][deliver] 被调用：kind=${info?.kind}, textLength=${text.length}, hasText=${Boolean(text.trim())}`);
-        // 🔍 调试日志：写入文件
-        const fs = await import('fs');
-        fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] kind=${info?.kind} textLen=${text.length} hasMEDIA=${text.includes('MEDIA:')}\n`);
         
         // ✅ 在 final 响应时，先处理裸露的文件路径
         if (info?.kind === "final" && text.trim()) {
-          // ✅ 直接处理 MEDIA: 前缀 — 上传并发送文件
-          const mediaRegex = /^MEDIA:(.+)$/gm;
-          const mediaMatches = [...text.matchAll(mediaRegex)];
-          if (mediaMatches.length > 0) {
-            fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] MEDIA detected: ${mediaMatches.length} files\n`);
-            text = text.replace(mediaRegex, '').trim();
-            const target: AICardTarget = isDirect
-              ? { type: 'user', userId: senderId }
-              : { type: 'group', openConversationId: conversationId };
-            const to = isDirect ? senderId : conversationId;
-            for (const match of mediaMatches) {
-              const mediaPath = match[1].trim().replace(/^~/, process.env.HOME || '/Users/cuibiao');
-              fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] sending: ${mediaPath}\n`);
-              try {
-                const result = await sendMediaToDingTalk({
-                  config: account.config as DingtalkConfig,
-                  target: to,
-                  mediaUrl: mediaPath,
-                });
-                fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] result: ${JSON.stringify(result)}\n`);
-              } catch (err: any) {
-                fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] ERROR: ${err.message}\n`);
-              }
-            }
-          }
-            }
-          }
-          // ✅ 处理裸露文件路径
           const target: AICardTarget = isDirect
             ? { type: 'user', userId: senderId }
             : { type: 'group', openConversationId: conversationId };
