@@ -400,6 +400,9 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
         let text = payload.text ?? "";
         
         log.info(`[DingTalk][deliver] 被调用：kind=${info?.kind}, textLength=${text.length}, hasText=${Boolean(text.trim())}`);
+        // 🔍 调试日志：写入文件
+        const fs = await import('fs');
+        fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] kind=${info?.kind} textLen=${text.length} hasMEDIA=${text.includes('MEDIA:')}\n`);
         
         // ✅ 在 final 响应时，先处理裸露的文件路径
         if (info?.kind === "final" && text.trim()) {
@@ -407,6 +410,7 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
           const mediaRegex = /^MEDIA:(.+)$/gm;
           const mediaMatches = [...text.matchAll(mediaRegex)];
           if (mediaMatches.length > 0) {
+            fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] MEDIA detected: ${mediaMatches.length} files\n`);
             text = text.replace(mediaRegex, '').trim();
             const target: AICardTarget = isDirect
               ? { type: 'user', userId: senderId }
@@ -414,16 +418,19 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
             const to = isDirect ? senderId : conversationId;
             for (const match of mediaMatches) {
               const mediaPath = match[1].trim().replace(/^~/, process.env.HOME || '/Users/cuibiao');
-              log.info(`[DingTalk][deliver] MEDIA: 检测到文件，直接发送: ${mediaPath}`);
+              fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] sending: ${mediaPath}\n`);
               try {
-                await sendMediaToDingTalk({
+                const result = await sendMediaToDingTalk({
                   config: account.config as DingtalkConfig,
                   target: to,
                   mediaUrl: mediaPath,
                 });
+                fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] result: ${JSON.stringify(result)}\n`);
               } catch (err: any) {
-                log.error(`[DingTalk][deliver] MEDIA 发送失败: ${err.message}`);
+                fs.appendFileSync('/tmp/dingtalk-deliver.log', `${new Date().toISOString()} [deliver] ERROR: ${err.message}\n`);
               }
+            }
+          }
             }
           }
           // ✅ 处理裸露文件路径
