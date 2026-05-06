@@ -38,6 +38,7 @@ import {
   type AICardTarget,
 } from "./services/messaging/card.js";
 import { sendMessage } from "./services/messaging.js";
+import { sendMediaToDingTalk } from "./services/messaging/index.js";
 import { getOapiAccessToken } from "./utils/token.js";
 import {
   processLocalImages,
@@ -402,11 +403,30 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
         
         // ✅ 在 final 响应时，先处理裸露的文件路径
         if (info?.kind === "final" && text.trim()) {
-          // ✅ 将 MEDIA: 前缀转换为 [DINGTALK_FILE] 标记（同时展开 ~）
-          text = text.replace(/^MEDIA:(.+)$/gm, (_: string, path: string) => {
-            const expanded = path.trim().replace(/^~/, process.env.HOME || '/Users/cuibiao');
-            return `[DINGTALK_FILE]${expanded}[/DINGTALK_FILE]`;
-          });
+          // ✅ 直接处理 MEDIA: 前缀 — 上传并发送文件
+          const mediaRegex = /^MEDIA:(.+)$/gm;
+          const mediaMatches = [...text.matchAll(mediaRegex)];
+          if (mediaMatches.length > 0) {
+            text = text.replace(mediaRegex, '').trim();
+            const target: AICardTarget = isDirect
+              ? { type: 'user', userId: senderId }
+              : { type: 'group', openConversationId: conversationId };
+            const to = isDirect ? senderId : conversationId;
+            for (const match of mediaMatches) {
+              const mediaPath = match[1].trim().replace(/^~/, process.env.HOME || '/Users/cuibiao');
+              log.info(`[DingTalk][deliver] MEDIA: 检测到文件，直接发送: ${mediaPath}`);
+              try {
+                await sendMediaToDingTalk({
+                  config: account.config as DingtalkConfig,
+                  target: to,
+                  mediaUrl: mediaPath,
+                });
+              } catch (err: any) {
+                log.error(`[DingTalk][deliver] MEDIA 发送失败: ${err.message}`);
+              }
+            }
+          }
+          // ✅ 处理裸露文件路径
           const target: AICardTarget = isDirect
             ? { type: 'user', userId: senderId }
             : { type: 'group', openConversationId: conversationId };
