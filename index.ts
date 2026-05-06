@@ -33,8 +33,8 @@ export default function register(api: OpenClawPluginApi) {
 
   // 注册发送文件工具（绕过 MEDIA: 标记限制）
   api.registerTool({
-    id: "send_dingtalk_file",
     name: "send_dingtalk_file",
+    label: "Send DingTalk File",
     description: "通过钉钉发送本地文件给当前会话用户。当 agent 生成文件后，使用此工具发送给用户。文件路径需为绝对路径。",
     parameters: {
       type: "object",
@@ -46,18 +46,18 @@ export default function register(api: OpenClawPluginApi) {
       },
       required: ["filePath"]
     },
-    handler: async (params: any, ctx: any) => {
+    async execute(_toolCallId: string, params: { filePath: string }) {
       const logger = createLogger(false, "DingTalk:SendFile");
       const filePath = params.filePath;
       
       if (!fs.existsSync(filePath)) {
-        return { ok: false, error: `文件不存在: ${filePath}` };
+        return { content: [{ type: "text", text: `文件不存在: ${filePath}` }], details: { ok: false, error: "FILE_NOT_FOUND" } };
       }
 
       const config = api.runtime.config;
       const channelCfg = config?.channels?.["dingtalk-connector"];
       if (!channelCfg?.clientId) {
-        return { ok: false, error: "DingTalk 通道未配置" };
+        return { content: [{ type: "text", text: "DingTalk 通道未配置" }], details: { ok: false } };
       }
 
       const dingtalkConfig = {
@@ -65,31 +65,25 @@ export default function register(api: OpenClawPluginApi) {
         clientSecret: channelCfg.clientSecret,
       };
 
-      // 从上下文获取目标用户
-      const sessionStore = ctx?.sessionStore || ctx?.session;
-      let target = "523612186039813142"; // 默认
+      const target = "523612186039813142";
+      const basename = path.basename(filePath);
       
-      try {
-        if (ctx?.deliveryContext?.to) {
-          target = ctx.deliveryContext.to;
-        }
-      } catch {}
-
       logger.info(`发送文件: ${filePath} -> ${target}`);
       
-      const result = await sendMediaToDingTalk({
-        config: dingtalkConfig as any,
-        target,
-        mediaUrl: filePath,
-      });
+      try {
+        const result = await sendMediaToDingTalk({
+          config: dingtalkConfig as any,
+          target,
+          mediaUrl: filePath,
+        });
 
-      const basename = path.basename(filePath);
-      if (result.ok) {
-        logger.info(`文件发送成功: ${basename}`);
-        return { ok: true, fileName: basename, message: `文件 ${basename} 已通过钉钉发送` };
-      } else {
-        logger.error(`文件发送失败: ${result.error}`);
-        return { ok: false, error: result.error || "发送失败" };
+        if (result.ok) {
+          return { content: [{ type: "text", text: `✅ 文件 ${basename} 已通过钉钉发送` }], details: { ok: true, fileName: basename } };
+        } else {
+          return { content: [{ type: "text", text: `❌ 文件发送失败: ${result.error}` }], details: { ok: false, error: result.error } };
+        }
+      } catch (err: any) {
+        return { content: [{ type: "text", text: `❌ 文件发送异常: ${err.message}` }], details: { ok: false, error: err.message } };
       }
     }
   });
