@@ -265,7 +265,7 @@ export const dingtalkPlugin: ChannelPlugin<ResolvedDingtalkAccount> = {
       }),
   },
   outbound: {
-    deliveryMode: "direct",
+    deliveryMode: "queued",
     chunker: (text, limit) => {
       // Simple markdown chunking - split by newlines
       const chunks: string[] = [];
