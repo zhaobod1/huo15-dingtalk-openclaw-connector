@@ -75,9 +75,18 @@
     "extensions": [
       "./index.ts"
     ],
-    "channels": [
-      "dingtalk-connector"
-    ],
+    "channel": {
+      "id": "dingtalk-connector",
+      "label": "DingTalk",
+      "selectionLabel": "DingTalk (Stream Mode)",
+      "detailLabel": "DingTalk Bot",
+      "blurb": "钉钉企业内部机器人，使用 Stream 模式连接，无需公网 IP，支持 AI Card 流式响应。",
+      "markdownCapable": true,
+      "commands": {
+        "nativeCommandsAutoEnabled": true,
+        "nativeSkillsAutoEnabled": true
+      }
+    },
     "installDependencies": true
   },
   "files": [
