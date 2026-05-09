@@ -54,7 +54,6 @@ import {
 } from "./src/services/messaging/card.js";
 
 import axios from "axios";
-import { execFile } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
@@ -250,37 +249,10 @@ function extractFileMarkers(content: string, log?: any): {
   return { fileInfos, cleanedContent: cleaned.trim() };
 }
 
-function getFfprobePath(): string {
-  return process.env.FFPROBE_PATH || "ffprobe";
-}
-
-async function extractAudioDuration(filePath: string, log?: any): Promise<number | null> {
-  const bin = getFfprobePath();
-  const args = ["-v", "quiet", "-print_format", "json", "-show_format", filePath];
-  log?.info?.(`extractAudioDuration: ffprobe=${bin}`);
-  return await new Promise((resolve) => {
-    execFile(bin, args, { timeout: 10_000 }, (err, stdout) => {
-      if (err) {
-        log?.error?.(`ffprobe failed: ${err.message}`);
-        resolve(null);
-        return;
-      }
-      try {
-        const json = JSON.parse(String(stdout || ""));
-        const dur = Number(json?.format?.duration);
-        if (!Number.isFinite(dur)) {
-          log?.warn?.(`invalid duration: ${json?.format?.duration}`);
-          resolve(null);
-          return;
-        }
-        resolve(Math.round(dur * 1000));
-      } catch (e: any) {
-        log?.error?.(`ffprobe output parse failed`);
-        resolve(null);
-      }
-    });
-  });
-}
+// NOTE: legacy ffprobe stubs (getFfprobePath / extractAudioDuration) were
+// removed. Production audio metadata extraction lives in
+// src/services/media.ts via the fluent-ffmpeg API. The old stubs were dead
+// weight and tripped OpenClaw's plugin install scanner.
 
 // ============ Download wrapper functions for tests ============
 // Tests expect these functions without agentWorkspaceDir parameter
@@ -387,9 +359,8 @@ export const __testables = {
   extractFileMarkers,
   isAudioFile,
 
-  // audio utils
-  getFfprobePath,
-  extractAudioDuration,
+  // audio utils (legacy stubs removed; production audio duration extraction
+  // lives in src/services/media.ts via fluent-ffmpeg)
   sendAudioMessage,
 
   // bindings

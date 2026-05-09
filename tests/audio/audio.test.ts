@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock child_process for extractAudioDuration
-const mockExecFile = vi.hoisted(() => vi.fn());
-vi.mock('child_process', () => ({
-  execFile: mockExecFile,
-}));
+// NOTE: legacy ffprobe-stub mocks removed. Production audio duration
+// extraction now uses the fluent-ffmpeg API in src/services/media.ts and
+// should be covered there with integration tests.
 
 const log = {
   info: vi.fn(),
@@ -40,96 +38,9 @@ describe('audio helpers', () => {
     });
   });
 
-  describe('getFfprobePath', () => {
-    it('should return FFPROBE_PATH env variable when package not found', async () => {
-      vi.resetModules();
-      process.env.FFPROBE_PATH = '/custom/ffprobe';
-      const { __testables } = await import('../../test');
-      const { getFfprobePath } = __testables as any;
-
-      const path = getFfprobePath();
-      expect(path).toBe('/custom/ffprobe');
-      delete process.env.FFPROBE_PATH;
-    });
-
-    it('should fallback to "ffprobe" when no path is found', async () => {
-      vi.resetModules();
-      delete process.env.FFPROBE_PATH;
-
-      const { __testables } = await import('../../test');
-      const { getFfprobePath } = __testables as any;
-
-      const path = getFfprobePath();
-      expect(path).toBe('ffprobe');
-    });
-  });
-
-  describe('extractAudioDuration', () => {
-    it('should return duration in milliseconds on success', async () => {
-      const { __testables } = await import('../../test');
-      const { extractAudioDuration } = __testables as any;
-
-      mockExecFile.mockImplementation((bin: string, args: string[], options: any, callback: Function) => {
-        callback(null, JSON.stringify({ format: { duration: '123.45' } }), '');
-      });
-
-      const result = await extractAudioDuration('/fake/audio.mp3', log);
-      expect(result).toBe(123450); // 123.45 seconds in ms
-      expect(log.info).toHaveBeenCalled();
-    });
-
-    it('should return null when execFile fails', async () => {
-      const { __testables } = await import('../../test');
-      const { extractAudioDuration } = __testables as any;
-
-      mockExecFile.mockImplementation((bin: string, args: string[], options: any, callback: Function) => {
-        callback(new Error('ffprobe failed'), '', '');
-      });
-
-      const result = await extractAudioDuration('/fake/audio.mp3', log);
-      expect(result).toBeNull();
-      expect(log.error).toHaveBeenCalled();
-    });
-
-    it('should return null when JSON parse fails', async () => {
-      const { __testables } = await import('../../test');
-      const { extractAudioDuration } = __testables as any;
-
-      mockExecFile.mockImplementation((bin: string, args: string[], options: any, callback: Function) => {
-        callback(null, 'invalid json', '');
-      });
-
-      const result = await extractAudioDuration('/fake/audio.mp3', log);
-      expect(result).toBeNull();
-      expect(log.error).toHaveBeenCalled();
-    });
-
-    it('should return null when duration is not a number', async () => {
-      const { __testables } = await import('../../test');
-      const { extractAudioDuration } = __testables as any;
-
-      mockExecFile.mockImplementation((bin: string, args: string[], options: any, callback: Function) => {
-        callback(null, JSON.stringify({ format: { duration: 'not-a-number' } }), '');
-      });
-
-      const result = await extractAudioDuration('/fake/audio.mp3', log);
-      expect(result).toBeNull();
-      expect(log.warn).toHaveBeenCalled();
-    });
-
-    it('should return null when format is missing', async () => {
-      const { __testables } = await import('../../test');
-      const { extractAudioDuration } = __testables as any;
-
-      mockExecFile.mockImplementation((bin: string, args: string[], options: any, callback: Function) => {
-        callback(null, JSON.stringify({}), '');
-      });
-
-      const result = await extractAudioDuration('/fake/audio.mp3', log);
-      expect(result).toBeNull();
-      expect(log.warn).toHaveBeenCalled();
-    });
-  });
+  // Legacy ffprobe-stub tests removed. Audio duration handling now lives in
+  // src/services/media.ts via fluent-ffmpeg and should be covered by
+  // integration tests against the real implementation.
 
   describe('processAudioMarkers', () => {
     it('should return original content when oapiToken is null', async () => {

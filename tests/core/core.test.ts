@@ -363,15 +363,7 @@ describe('core functionality', () => {
     });
   });
 
-  describe('getFfprobePath', () => {
-    it('should return ffprobe path', async () => {
-      const { __testables } = await import('../../test');
-      const { getFfprobePath } = __testables as any;
-
-      const result = getFfprobePath();
-
-      expect(result).toBeDefined();
-      expect(typeof result).toBe('string');
-    });
-  });
+  // Legacy ffprobe-stub test removed. Audio duration handling now uses
+  // fluent-ffmpeg in src/services/media.ts and should be covered there
+  // directly.
 });
