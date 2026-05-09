@@ -34,7 +34,7 @@ interface HistoryEntry {
   content: string;
   [key: string]: any;
 }
-import type { ResolvedDingtalkAccount, DingtalkConfig } from "../types/index.ts";
+import type { ResolvedDingtalkAccount, DingtalkConfig } from "../types/index.js";
 import { 
   buildSessionContext,
   getAccessToken,
@@ -43,22 +43,22 @@ import {
   DINGTALK_OAPI,
   addEmotionReply,
   recallEmotionReply,
-} from "../utils/utils-legacy.ts";
-import { resolveAgentWorkspaceDir } from "../utils/agent.ts";
+} from "../utils/utils-legacy.js";
+import { resolveAgentWorkspaceDir } from "../utils/agent.js";
 import { 
   processLocalImages, 
   processVideoMarkers, 
   processAudioMarkers, 
   processFileMarkers
-} from "../services/media/index.ts";
-import { sendProactive, type AICardTarget } from "../services/messaging/index.ts";
-import { createAICardForTarget, streamAICard, type AICardInstance } from "../services/messaging/card.ts";
-import { QUEUE_BUSY_ACK_PHRASES } from "../utils/constants.ts";
-import { createDingtalkReplyDispatcher } from "../reply-dispatcher.ts";
-import { normalizeSlashCommand } from "../utils/session.ts";
-import { getDingtalkRuntime } from "../runtime.ts";
-import { dingtalkHttp } from '../utils/http-client.ts';
-import { createLoggerFromConfig } from '../utils/index.ts';
+} from "../services/media/index.js";
+import { sendProactive, type AICardTarget } from "../services/messaging/index.js";
+import { createAICardForTarget, streamAICard, type AICardInstance } from "../services/messaging/card.js";
+import { QUEUE_BUSY_ACK_PHRASES } from "../utils/constants.js";
+import { createDingtalkReplyDispatcher } from "../reply-dispatcher.js";
+import { normalizeSlashCommand } from "../utils/session.js";
+import { getDingtalkRuntime } from "../runtime.js";
+import { dingtalkHttp } from '../utils/http-client.js';
+import { createLoggerFromConfig } from '../utils/index.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';

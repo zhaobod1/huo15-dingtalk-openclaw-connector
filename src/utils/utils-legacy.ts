@@ -2,11 +2,11 @@
  * 钉钉插件工具函数
  */
 
-import type { DingtalkConfig, ResolvedDingtalkAccount } from '../types/index.ts';
+import type { DingtalkConfig, ResolvedDingtalkAccount } from '../types/index.js';
 
 // SessionContext 和 buildSessionContext 统一由 session.ts 维护
-export type { SessionContext } from './session.ts';
-export { buildSessionContext } from './session.ts';
+export type { SessionContext } from './session.js';
+export { buildSessionContext } from './session.js';
 
 // ============ 常量 ============
 
@@ -70,7 +70,7 @@ export async function getAccessToken(config: DingtalkConfig): Promise<string> {
     return cached.token;
   }
 
-  const { dingtalkHttp } = await import('./http-client.ts');
+  const { dingtalkHttp } = await import('./http-client.js');
   const response = await dingtalkHttp.post(`${DINGTALK_API}/v1.0/oauth2/accessToken`, {
     appKey: config.clientId,
     appSecret: config.clientSecret,
@@ -94,7 +94,7 @@ export async function getOapiAccessToken(config: DingtalkConfig): Promise<string
       return cached.token;
     }
 
-    const { dingtalkOapiHttp } = await import('./http-client.ts');
+    const { dingtalkOapiHttp } = await import('./http-client.js');
     const resp = await dingtalkOapiHttp.get(`${DINGTALK_OAPI}/gettoken`, {
       params: { appkey: config.clientId, appsecret: config.clientSecret },
     });
@@ -143,7 +143,7 @@ export async function getUnionId(
       log?.error?.('[DingTalk] getUnionId: 无法获取 oapi access_token');
       return null;
     }
-    const { dingtalkOapiHttp } = await import('./http-client.ts');
+    const { dingtalkOapiHttp } = await import('./http-client.js');
     const resp = await dingtalkOapiHttp.get(`${DINGTALK_OAPI}/user/get`, {
       params: { access_token: token, userid: staffId },
       timeout: 10_000,
@@ -400,7 +400,7 @@ export async function addEmotionReply(config: DingtalkConfig, data: any, log?: a
   if (!data.msgId || !data.conversationId) return;
   try {
     const token = await getAccessToken(config);
-    const { dingtalkHttp } = await import('./http-client.ts');
+    const { dingtalkHttp } = await import('./http-client.js');
     await dingtalkHttp.post(`${DINGTALK_API}/v1.0/robot/emotion/reply`, {
       robotCode: data.robotCode ?? config.clientId,
       openMsgId: data.msgId,
@@ -430,7 +430,7 @@ export async function recallEmotionReply(config: DingtalkConfig, data: any, log?
   if (!data.msgId || !data.conversationId) return;
   try {
     const token = await getAccessToken(config);
-    const { dingtalkHttp } = await import('./http-client.ts');
+    const { dingtalkHttp } = await import('./http-client.js');
     await dingtalkHttp.post(`${DINGTALK_API}/v1.0/robot/emotion/recall`, {
       robotCode: data.robotCode ?? config.clientId,
       openMsgId: data.msgId,

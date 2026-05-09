@@ -15,21 +15,21 @@ import {
   getDingtalkConfig,
   isDingtalkConfigured,
   getUnionId,
-} from "./src/utils/utils-legacy.ts";
+} from "./src/utils/utils-legacy.js";
 import {
   buildSessionContext,
   normalizeSlashCommand,
-} from "./src/utils/session.ts";
+} from "./src/utils/session.js";
 
-import * as media from "./src/services/media/index.ts";
+import * as media from "./src/services/media/index.js";
 import {
   downloadImageToFile as _downloadImageToFile,
   downloadMediaByCode as _downloadMediaByCode,
   getFileDownloadUrl,
   downloadFileToLocal,
   extractMessageContent,
-} from "./src/core/message-handler.ts";
-import { getAccessToken, getOapiAccessToken } from "./src/utils/token.ts";
+} from "./src/core/message-handler.js";
+import { getAccessToken, getOapiAccessToken } from "./src/utils/token.js";
 
 import {
   buildMsgPayload,
@@ -44,14 +44,14 @@ import {
   sendProactive,
   sendToGroup,
   sendToUser,
-} from "./src/services/messaging.ts";
+} from "./src/services/messaging.js";
 
 import {
   buildDeliverBody,
   createAICardForTarget,
   streamAICard,
   finishAICard,
-} from "./src/services/messaging/card.ts";
+} from "./src/services/messaging/card.js";
 
 import axios from "axios";
 import { execFile } from "child_process";

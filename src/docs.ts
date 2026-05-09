@@ -3,9 +3,9 @@
  * 支持读写钉钉在线文档（文档、表格等）
  */
 
-import type { DingtalkConfig } from './types/index.ts';
-import { getAccessToken, DINGTALK_API } from './utils/index.ts';
-import { dingtalkHttp } from './utils/http-client.ts';
+import type { DingtalkConfig } from './types/index.js';
+import { getAccessToken, DINGTALK_API } from './utils/index.js';
+import { dingtalkHttp } from './utils/http-client.js';
 
 // ============ 类型定义 ============
 

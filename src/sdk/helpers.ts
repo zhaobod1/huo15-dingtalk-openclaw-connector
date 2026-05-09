@@ -4,7 +4,7 @@
  * 完全独立的辅助函数，不依赖任何外部 SDK。
  */
 
-import type { SecretInput, SecretInputRef } from "./types.ts";
+import type { SecretInput, SecretInputRef } from "./types.js";
 
 // ============================================================================
 // 账号 ID 处理

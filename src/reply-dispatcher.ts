@@ -26,25 +26,25 @@ const {
   logTypingFailure,
 } = channelRuntimeModule;
 
-import { createLoggerFromConfig } from "./utils/logger.ts";
-import { resolveDingtalkAccount } from "./config/accounts.ts";
-import { getDingtalkRuntime } from "./runtime.ts";
-import type { DingtalkConfig } from "./types/index.ts";
+import { createLoggerFromConfig } from "./utils/logger.js";
+import { resolveDingtalkAccount } from "./config/accounts.js";
+import { getDingtalkRuntime } from "./runtime.js";
+import type { DingtalkConfig } from "./types/index.js";
 import {
   createAICardForTarget,
   finishAICard,
   streamAICard,
   type AICardInstance,
   type AICardTarget,
-} from "./services/messaging/card.ts";
-import { sendMessage } from "./services/messaging.ts";
-import { getOapiAccessToken } from "./utils/token.ts";
+} from "./services/messaging/card.js";
+import { sendMessage } from "./services/messaging.js";
+import { getOapiAccessToken } from "./utils/token.js";
 import {
   processLocalImages,
   processVideoMarkers,
   processAudioMarkers,
   processFileMarkers,
-} from "./services/media/index.ts";
+} from "./services/media/index.js";
 
 
 export type CreateDingtalkReplyDispatcherParams = {
@@ -584,7 +584,7 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
           
           const now = Date.now();
           if (now - lastUpdateTime >= updateInterval) {
-            const { FILE_MARKER_PATTERN, VIDEO_MARKER_PATTERN, AUDIO_MARKER_PATTERN } = await import('./services/media/common.ts');
+            const { FILE_MARKER_PATTERN, VIDEO_MARKER_PATTERN, AUDIO_MARKER_PATTERN } = await import('./services/media/common.js');
             const displayContent = accumulatedText
               .replace(FILE_MARKER_PATTERN, '')
               .replace(VIDEO_MARKER_PATTERN, '')

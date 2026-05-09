@@ -1,4 +1,4 @@
-import type { DingtalkMessageContext } from "./types/index.ts";
+import type { DingtalkMessageContext } from "./types/index.js";
 
 function stripProviderPrefix(raw: string): string {
   return raw.replace(/^(dingtalk|dd|ding):/i, "").trim();

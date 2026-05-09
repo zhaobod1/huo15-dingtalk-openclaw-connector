@@ -3,18 +3,18 @@
  * 支持 AI Card 流式响应、普通消息、主动消息
  */
 
-import type { DingtalkConfig } from "../types/index.ts";
-import { DINGTALK_API, getAccessToken, getOapiAccessToken } from "../utils/index.ts";
-import { dingtalkHttp, dingtalkOapiHttp } from "../utils/http-client.ts";
-import { MEDIA_MSG_TYPES } from "../utils/constants.ts";
-import { createLoggerFromConfig } from "../utils/logger.ts";
+import type { DingtalkConfig } from "../types/index.js";
+import { DINGTALK_API, getAccessToken, getOapiAccessToken } from "../utils/index.js";
+import { dingtalkHttp, dingtalkOapiHttp } from "../utils/http-client.js";
+import { MEDIA_MSG_TYPES } from "../utils/constants.js";
+import { createLoggerFromConfig } from "../utils/logger.js";
 import {
   processLocalImages,
   processVideoMarkers,
   processAudioMarkers,
   processFileMarkers,
   uploadMediaToDingTalk,
-} from "./media.ts";
+} from "./media.js";
 // ✅ 导入 AI Card 相关函数，避免重复实现
 import {
   createAICardForTarget,
@@ -22,7 +22,7 @@ import {
   finishAICard,
   type AICardInstance,
   type AICardTarget,
-} from "./messaging/card.ts";
+} from "./messaging/card.js";
 
 // ============ 常量 ============
 // 注意：AI Card 相关的类型和函数已移至 ./messaging/card.ts，通过上方 import 引入
@@ -762,7 +762,7 @@ export async function sendMediaToDingTalk(params: {
     };
 
     // 使用 sendFileProactive 发送文件消息
-    const { sendFileProactive } = await import("./media.ts");
+    const { sendFileProactive } = await import("./media.js");
     await sendFileProactive(config, targetParam, fileInfo, uploadResult.mediaId, log);
 
     // 返回成功结果

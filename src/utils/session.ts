@@ -3,7 +3,7 @@
  * 构建 OpenClaw 标准会话上下文
  */
 
-import { NEW_SESSION_COMMANDS } from './constants.ts';
+import { NEW_SESSION_COMMANDS } from './constants.js';
 
 /** OpenClaw 标准会话上下文 */
 export interface SessionContext {

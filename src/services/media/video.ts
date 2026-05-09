@@ -3,8 +3,8 @@
  * 支持视频元数据提取、封面生成、视频消息发送
  */
 
-import type { DingtalkConfig } from '../../types/index.ts';
-import { VIDEO_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk } from './common.ts';
+import type { DingtalkConfig } from '../../types/index.js';
+import { VIDEO_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk } from './common.js';
 import * as fs from 'fs';
 
 /** 视频信息接口 */

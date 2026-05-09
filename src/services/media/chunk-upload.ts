@@ -10,8 +10,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { createLogger } from '../../utils/logger.ts';
-import { dingtalkOapiHttp, dingtalkUploadHttp } from '../../utils/http-client.ts';
+import { createLogger } from '../../utils/logger.js';
+import { dingtalkOapiHttp, dingtalkUploadHttp } from '../../utils/http-client.js';
 // form-data 是 CJS 模块，静态 import 可确保 jiti/ESM 环境下 CJS 互操作行为稳定，
 // 避免动态 import 时 .default 偶发为 undefined 导致 "Cannot read properties of undefined (reading 'registry')"
 import FormData from 'form-data';

@@ -3,8 +3,8 @@
  * 支持音频消息发送
  */
 
-import type { DingtalkConfig } from '../../types/index.ts';
-import { AUDIO_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk } from './common.ts';
+import type { DingtalkConfig } from '../../types/index.js';
+import { AUDIO_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk } from './common.js';
 import * as fs from 'fs';
 
 /**

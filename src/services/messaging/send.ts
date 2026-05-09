@@ -3,9 +3,9 @@
  * 支持 Markdown、文本、链接等消息类型
  */
 
-import type { DingtalkConfig } from '../../types/index.ts';
-import { DINGTALK_API, getAccessToken } from '../../utils/token.ts';
-import { dingtalkHttp } from '../../utils/http-client.ts';
+import type { DingtalkConfig } from '../../types/index.js';
+import { DINGTALK_API, getAccessToken } from '../../utils/token.js';
+import { dingtalkHttp } from '../../utils/http-client.js';
 
 /** 消息类型枚举 */
 export type DingTalkMsgType = 'text' | 'markdown' | 'link' | 'actionCard' | 'image';

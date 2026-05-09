@@ -8,9 +8,9 @@ import * as path from 'path';
 // form-data 是 CJS 模块，静态 import 可确保 jiti/ESM 环境下 CJS 互操作行为稳定，
 // 避免动态 import 时 .default 偶发为 undefined 导致 "Cannot read properties of undefined (reading 'registry')"
 import FormData from 'form-data';
-import type { DingtalkConfig } from '../types/index.ts';
-import { DINGTALK_OAPI, getOapiAccessToken } from '../utils/index.ts';
-import { dingtalkHttp, dingtalkOapiHttp } from '../utils/http-client.ts';
+import type { DingtalkConfig } from '../types/index.js';
+import { DINGTALK_OAPI, getOapiAccessToken } from '../utils/index.js';
+import { dingtalkHttp, dingtalkOapiHttp } from '../utils/http-client.js';
 
 
 /** 文本文件扩展名 */
@@ -716,7 +716,7 @@ async function sendVideoMessage(
   metadata?: { duration: number; width: number; height: number },
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
     
     // 钉钉视频消息格式（sessionWebhook 模式）
     const videoMessage = {
@@ -759,8 +759,8 @@ export async function sendVideoProactive(
   log?: any,
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
-    const { DINGTALK_API } = await import('../utils/index.ts');
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
+    const { DINGTALK_API } = await import('../utils/index.js');
 
     // 钉钉普通消息 API 的视频消息格式
     const msgParam = {
@@ -819,7 +819,7 @@ async function sendAudioMessage(
   durationMs?: number,
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
 
     // 钉钉语音消息格式
     const actualDuration = (durationMs && durationMs > 0) ? durationMs.toString() : '60000';
@@ -862,8 +862,8 @@ export async function sendAudioProactive(
   durationMs?: number,
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
-    const { DINGTALK_API } = await import('../utils/index.ts');
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
+    const { DINGTALK_API } = await import('../utils/index.js');
 
     // 钉钉普通消息 API 的音频消息格式
     const actualDuration = (durationMs && durationMs > 0) ? durationMs.toString() : '60000';
@@ -915,7 +915,7 @@ async function sendFileMessage(
   log?: any,
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
 
     const fileMessage = {
       msgtype: 'file',
@@ -956,8 +956,8 @@ export async function sendFileProactive(
   log?: any,
 ): Promise<void> {
   try {
-    const token = await (await import('../utils/index.ts')).getAccessToken(config);
-    const { DINGTALK_API } = await import('../utils/index.ts');
+    const token = await (await import('../utils/index.js')).getAccessToken(config);
+    const { DINGTALK_API } = await import('../utils/index.js');
 
     // 钉钉普通消息 API 的文件消息格式
     const msgParam = {

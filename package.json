@@ -1,11 +1,11 @@
 {
   "name": "@huo15/dingtalk-openclaw-connector",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "火一五定制版钉钉 OpenClaw 连接器 - 支持记忆系统集成、会话管理、AI Card 流式响应",
-  "main": "index.ts",
+  "main": "./dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "echo 'No build needed - jiti loads TS at runtime'",
+    "build": "tsc 2>/dev/null; cp package.json dist/; cp openclaw.plugin.json dist/",
     "lint": "echo 'Lint check skipped'",
     "lint:fix": "echo 'Lint fix skipped'",
     "test": "vitest run tests/gateway-methods.unit.test.ts",
@@ -22,7 +22,7 @@
     "release:verify": "npm view @dingtalk-real-ai/dingtalk-connector version",
     "typecheck": "tsc --noEmit",
     "release": "bash scripts/release.sh",
-    "prepublishOnly": "npm run typecheck",
+    "prepublishOnly": "npm run build",
     "clean": "rm -rf node_modules package-lock.json",
     "install:fresh": "npm run clean && npm install",
     "dev": "echo 'Run: openclaw start'",
@@ -79,5 +79,13 @@
       "dingtalk-connector"
     ],
     "installDependencies": true
-  }
+  },
+  "files": [
+    "index.ts",
+    "openclaw.plugin.json",
+    "src/**/*",
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ]
 }

@@ -15,9 +15,9 @@
  */
 
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
-import { dingtalkPlugin } from "./src/channel.ts";
-import { setDingtalkRuntime } from "./src/runtime.ts";
-import { registerGatewayMethods } from "./src/gateway-methods.ts";
+import { dingtalkPlugin } from "./src/channel.js";
+import { setDingtalkRuntime } from "./src/runtime.js";
+import { registerGatewayMethods } from "./src/gateway-methods.js";
 
 export default function register(api: OpenClawPluginApi) {
   setDingtalkRuntime(api.runtime);

@@ -3,8 +3,8 @@
  * 支持钉钉 API 和 OAPI 的 Token 获取和缓存
  */
 
-import type { DingtalkConfig } from '../types/index.ts';
-import { dingtalkHttp, dingtalkOapiHttp } from './http-client.ts';
+import type { DingtalkConfig } from '../types/index.js';
+import { dingtalkHttp, dingtalkOapiHttp } from './http-client.js';
 
 // ============ 常量 ============
 

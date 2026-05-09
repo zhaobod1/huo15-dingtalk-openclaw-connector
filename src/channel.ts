@@ -10,28 +10,28 @@ import {
   DEFAULT_ACCOUNT_ID,
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
-} from "./sdk/helpers.ts";
-import { DingtalkConfigBaseSchema } from "./config/schema.ts";
-import { createLogger } from "./utils/logger.ts";
+} from "./sdk/helpers.js";
+import { DingtalkConfigBaseSchema } from "./config/schema.js";
+import { createLogger } from "./utils/logger.js";
 import {
   resolveDingtalkAccount,
   resolveDingtalkCredentials,
   listDingtalkAccountIds,
   resolveDefaultDingtalkAccountId,
-} from "./config/accounts.ts";
+} from "./config/accounts.js";
 import {
   listDingtalkDirectoryPeers,
   listDingtalkDirectoryGroups,
   listDingtalkDirectoryPeersLive,
   listDingtalkDirectoryGroupsLive,
-} from "./directory.ts";
-import { resolveDingtalkGroupToolPolicy } from "./policy.ts";
-import { probeDingtalk } from "./probe.ts";
-import { normalizeDingtalkTarget, looksLikeDingtalkId } from "./targets.ts";
-import { dingtalkOnboardingAdapter } from "./onboarding.ts";
-import { monitorDingtalkProvider } from "./core/provider.ts";
-import { sendTextToDingTalk, sendMediaToDingTalk } from "./services/messaging/index.ts";
-import type { ResolvedDingtalkAccount, DingtalkConfig } from "./types/index.ts";
+} from "./directory.js";
+import { resolveDingtalkGroupToolPolicy } from "./policy.js";
+import { probeDingtalk } from "./probe.js";
+import { normalizeDingtalkTarget, looksLikeDingtalkId } from "./targets.js";
+import { dingtalkOnboardingAdapter } from "./onboarding.js";
+import { monitorDingtalkProvider } from "./core/provider.js";
+import { sendTextToDingTalk, sendMediaToDingTalk } from "./services/messaging/index.js";
+import type { ResolvedDingtalkAccount, DingtalkConfig } from "./types/index.js";
 
 const meta = {
   id: "dingtalk-connector",

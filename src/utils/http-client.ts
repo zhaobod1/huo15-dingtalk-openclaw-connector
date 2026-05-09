@@ -5,7 +5,7 @@
  * 
  * 使用方式：
  * ```typescript
- * import { dingtalkHttp } from './utils/http-client.ts';
+ * import { dingtalkHttp } from './utils/http-client.js';
  * 
  * const response = await dingtalkHttp.post('/api/endpoint', data);
  * ```

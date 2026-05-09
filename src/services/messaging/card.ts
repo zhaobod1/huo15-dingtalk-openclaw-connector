@@ -3,9 +3,9 @@
  * 支持 AI Card 创建、流式更新、完成
  */
 
-import type { DingtalkConfig } from "../../types/index.ts";
-import { DINGTALK_API, getAccessToken } from "../../utils/token.ts";
-import { dingtalkHttp } from "../../utils/http-client.ts";
+import type { DingtalkConfig } from "../../types/index.js";
+import { DINGTALK_API, getAccessToken } from "../../utils/token.js";
+import { dingtalkHttp } from "../../utils/http-client.js";
 
 // ============ 常量 ============
 

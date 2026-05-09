@@ -1,7 +1,7 @@
-import { normalizeAccountId } from "../sdk/helpers.ts";
+import { normalizeAccountId } from "../sdk/helpers.js";
 import { z } from "zod";
 export { z };
-import { buildSecretInputSchema, hasConfiguredSecretInput } from "../secret-input.ts";
+import { buildSecretInputSchema, hasConfiguredSecretInput } from "../secret-input.js";
 
 const DmPolicySchema = z.enum(["open", "pairing", "allowlist"]);
 const GroupPolicySchema = z.enum(["open", "allowlist", "disabled"]);

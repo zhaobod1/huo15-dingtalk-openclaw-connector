@@ -12,8 +12,8 @@
  * - 并行启动多个账号的消息流连接
  */
 import type { ClawdbotConfig, RuntimeEnv } from "openclaw/plugin-sdk";
-import * as monitorState from "./state";
-import { createLogger } from "../utils/logger";
+import * as monitorState from "./state.js";
+import { createLogger } from "../utils/logger.js";
 
 // 只解构 monitorState 的导出
 const {
@@ -36,10 +36,10 @@ export {
   clearDingtalkWebhookRateLimitStateForTest,
   getDingtalkWebhookRateLimitStateSizeForTest,
   isWebhookRateLimitedForTest,
-} from "./state";
+} from "./state.js";
 
 // 只导出类型，不 re-export 函数（避免循环依赖）
-export type { DingtalkReactionCreatedEvent } from "./connection";
+export type { DingtalkReactionCreatedEvent } from "./connection.js";
 
 export async function monitorDingtalkProvider(opts: MonitorDingtalkOpts = {}): Promise<void> {
   const cfg = opts.config;

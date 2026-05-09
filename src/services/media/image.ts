@@ -15,8 +15,8 @@ interface Logger {
 import {
   LOCAL_IMAGE_RE,
   BARE_IMAGE_PATH_RE,
-} from './common.ts';
-import {uploadMediaToDingTalk} from '../media.ts'
+} from './common.js';
+import {uploadMediaToDingTalk} from '../media.js'
 /**
  * 扫描内容中的本地图片路径，上传到钉钉并替换为标准 Markdown 图片语法
  *

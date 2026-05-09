@@ -7,7 +7,7 @@ vi.mock("../../src/config/accounts.ts", () => ({
 }));
 
 import { resolveDingtalkGroupToolPolicy } from "../../src/policy";
-import { resolveDingtalkAccount } from "../../src/config/accounts.ts";
+import { resolveDingtalkAccount } from "../../src/config/accounts.js";
 
 describe("resolveDingtalkGroupToolPolicy", () => {
   it("returns group-level tools policy when configured", () => {

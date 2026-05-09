@@ -5,10 +5,10 @@
  */
 
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
-import { resolveDingtalkAccount } from "./config/accounts.ts";
-import { DingtalkDocsClient } from "./docs.ts";
-import { sendProactive } from "./services/messaging.ts";
-import { getUnionId } from "./utils/utils-legacy.ts";
+import { resolveDingtalkAccount } from "./config/accounts.js";
+import { DingtalkDocsClient } from "./docs.js";
+import { sendProactive } from "./services/messaging.js";
+import { getUnionId } from "./utils/utils-legacy.js";
 
 /**
  * 注册所有 Gateway Methods
@@ -391,7 +391,7 @@ export function registerGatewayMethods(api: OpenClawPluginApi) {
       }
 
       // 尝试获取 access token 来验证连接
-      const { getAccessToken } = await import('./utils/utils-legacy.ts');
+      const { getAccessToken } = await import('./utils/utils-legacy.js');
       await getAccessToken(account.config);
 
       respond(true, { ok: true, details: { clientId: account.config.clientId } });

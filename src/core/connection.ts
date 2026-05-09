@@ -14,10 +14,10 @@
  */
 import * as fs from 'fs';
 import type { ClawdbotConfig, RuntimeEnv } from "openclaw/plugin-sdk";
-import type { ResolvedDingtalkAccount } from "../types/index.ts";
+import type { ResolvedDingtalkAccount } from "../types/index.js";
 import {
   checkAndMarkDingtalkMessage,
-} from "../utils/utils-legacy.ts";
+} from "../utils/utils-legacy.js";
 
 // ============ 类型定义 ============
 

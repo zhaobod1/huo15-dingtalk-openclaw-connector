@@ -7,7 +7,7 @@ interface ToolPolicy {
   allow?: string[];
   deny?: string[];
 }
-import { resolveDingtalkAccount } from "./config/accounts.ts";
+import { resolveDingtalkAccount } from "./config/accounts.js";
 
 export function resolveDingtalkGroupToolPolicy(params: {
   cfg: ClawdbotConfig;

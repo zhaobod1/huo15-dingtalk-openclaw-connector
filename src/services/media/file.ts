@@ -4,8 +4,8 @@
  */
 
 import * as fs from 'fs';
-import type { DingtalkConfig } from '../../types/index.ts';
-import { FILE_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk, TEXT_FILE_EXTENSIONS } from './common.ts';
+import type { DingtalkConfig } from '../../types/index.js';
+import { FILE_MARKER_PATTERN, toLocalPath, uploadMediaToDingTalk, TEXT_FILE_EXTENSIONS } from './common.js';
 
 /**
  * 解析文档文件，提取文本内容

@@ -1,5 +1,5 @@
-import { raceWithTimeoutAndAbort } from "./utils/async.ts";
-import type { DingtalkProbeResult } from "./types/index.ts";
+import { raceWithTimeoutAndAbort } from "./utils/async.js";
+import type { DingtalkProbeResult } from "./types/index.js";
 
 /** LRU Cache for probe results to reduce repeated health-check calls. */
 class LRUCache<K, V> {

@@ -7,9 +7,9 @@ import * as path from 'path';
 // form-data 是 CJS 模块，静态 import 可确保 jiti/ESM 环境下 CJS 互操作行为稳定，
 // 避免动态 import 时 .default 偶发为 undefined 导致 "Cannot read properties of undefined (reading 'registry')"
 import FormData from 'form-data';
-import { createLogger } from '../../utils/logger.ts';
-import { CHUNK_CONFIG } from './chunk-upload.ts';
-import { dingtalkOapiHttp, dingtalkUploadHttp } from '../../utils/http-client.ts';
+import { createLogger } from '../../utils/logger.js';
+import { CHUNK_CONFIG } from './chunk-upload.js';
+import { dingtalkOapiHttp, dingtalkUploadHttp } from '../../utils/http-client.js';
 
 // ============ 常量 ============
 

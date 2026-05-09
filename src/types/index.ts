@@ -11,7 +11,7 @@ import type {
   DingtalkGroupSchema,
   DingtalkAccountConfigSchema,
   z,
-} from "../config/schema.ts";
+} from "../config/schema.js";
 
 export type DingtalkConfig = z.infer<typeof DingtalkConfigSchema>;
 export type DingtalkGroupConfig = z.infer<typeof DingtalkGroupSchema>;
