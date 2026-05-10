@@ -56,3 +56,10 @@ Thumbs.db
 test.ts
 vitest.config.ts
 .gitignore
+
+# v1.0.10: stale TS→JS 编译产物 — npm pack 时排除,只发 .ts 源,
+# 让 jiti/Node 在运行时 resolver 把 import "./foo.js" fallback 到 .ts
+src/**/*.js
+src/**/*.js.map
+index.js
+index.js.map
