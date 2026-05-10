@@ -1,7 +1,7 @@
 {
   "id": "@huo15/dingtalk-openclaw-connector",
   "name": "Huo15 DingTalk Connector Pro",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "\u706b\u4e00\u4e94\u5b9a\u5236\u7248\u9489\u9489 OpenClaw \u8fde\u63a5\u5668",
   "author": "\u706b\u4e00\u4e94\u4fe1\u606f\u79d1\u6280\u6709\u9650\u516c\u53f8",
   "main": "index.ts",

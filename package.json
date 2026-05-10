@@ -1,8 +1,8 @@
 {
   "name": "@huo15/dingtalk-openclaw-connector",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "火一五定制版钉钉 OpenClaw 连接器 - 支持记忆系统集成、会话管理、AI Card 流式响应",
-  "main": "./dist/index.js",
+  "main": "./index.ts",
   "type": "module",
   "scripts": {
     "build": "tsc 2>/dev/null; cp package.json dist/; cp openclaw.plugin.json dist/",
