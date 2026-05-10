@@ -206,12 +206,16 @@ async function ensureValidToken(
  * 流式更新 AI Card 内容
  */
 export async function streamAICard(
-  card: AICardInstance,
+  card: AICardInstance | null,
   content: string,
   finished: boolean = false,
   config?: DingtalkConfig,
   log?: any,
 ): Promise<void> {
+  if (!card) {
+    log?.warn?.('[streamAICard] card 为 null，跳过');
+    return;
+  }
   // 确保 token 有效
   if (config) {
     await ensureValidToken(card, config);
@@ -290,11 +294,15 @@ export async function streamAICard(
  * 完成 AI Card
  */
 export async function finishAICard(
-  card: AICardInstance,
+  card: AICardInstance | null,
   content: string,
   config?: DingtalkConfig,
   log?: any,
 ): Promise<void> {
+  if (!card) {
+    log?.warn?.('[finishAICard] card 为 null，跳过');
+    return;
+  }
   // 确保 token 有效
   if (config) {
     await ensureValidToken(card, config);
