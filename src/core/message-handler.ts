@@ -56,7 +56,7 @@ import { createAICardForTarget, streamAICard, type AICardInstance } from "../ser
 import { QUEUE_BUSY_ACK_PHRASES } from "../utils/constants.js";
 import { createDingtalkReplyDispatcher } from "../reply-dispatcher.js";
 import { normalizeSlashCommand } from "../utils/session.js";
-import { getDingtalkRuntime } from "../runtime.js";
+import { getDingtalkRuntime, setCurrentTarget } from "../runtime.js";
 import { dingtalkHttp } from '../utils/http-client.js';
 import { createLoggerFromConfig } from '../utils/index.js';
 import * as fs from 'fs';
@@ -1412,6 +1412,9 @@ export async function handleDingTalkMessageInternal(params: HandleMessageParams)
       OriginatingChannel: "dingtalk-connector" as const,
       OriginatingTo: toField,  // ✅ 修复：应该使用 toField，而不是 accountId
     });
+
+    // 记录当前会话 target，供 send_dingtalk_file 等工具自动获取发送目标
+    setCurrentTarget(senderId, data.conversationId, isDirect);
 
     // 创建 reply dispatcher，使用解析后的 agentId
     const { dispatcher, replyOptions, markDispatchIdle, getAsyncModeResponse } = createDingtalkReplyDispatcher({

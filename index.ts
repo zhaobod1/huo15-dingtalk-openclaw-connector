@@ -16,7 +16,7 @@
 
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
 import { dingtalkPlugin } from "./src/channel.js";
-import { setDingtalkRuntime } from "./src/runtime.js";
+import { setDingtalkRuntime, getCurrentTarget } from "./src/runtime.js";
 import { registerGatewayMethods } from "./src/gateway-methods.js";
 import { sendMediaToDingTalk } from "./src/services/messaging/index.js";
 import { resolveDingtalkAccount } from "./src/config/accounts.js";
@@ -36,23 +36,42 @@ export default function register(api: OpenClawPluginApi) {
     api.registerTool({
     name: "send_dingtalk_file",
     label: "Send DingTalk File",
-    description: "通过钉钉发送本地文件给当前会话用户。当 agent 生成文件后，使用此工具发送给用户。文件路径需为绝对路径。",
+    description: "通过钉钉发送本地文件给当前会话用户。当 agent 生成文件后，使用此工具发送给用户。文件路径需为绝对路径。target 可省略，默认发给当前对话的发起者。",
     parameters: {
       type: "object",
       properties: {
         filePath: {
           type: "string",
           description: "文件的本地绝对路径，如 /Users/cuibiao/.openclaw/workspace/skills-all.docx"
+        },
+        target: {
+          type: "string",
+          description: "（可选）接收者的用户 ID（单聊）或 openConversationId（群聊，以 cid 开头）。不填则自动发给当前会话用户。"
         }
       },
       required: ["filePath"]
     },
-    async execute(_toolCallId: string, params: { filePath: string }) {
+    async execute(_toolCallId: string, params: { filePath: string; target?: string }) {
       const logger = createLogger(false, "DingTalk:SendFile");
-      const filePath = params.filePath;
-      
+      const { filePath } = params;
+      let { target } = params;
+
       if (!fs.existsSync(filePath)) {
         return { content: [{ type: "text", text: `文件不存在: ${filePath}` }], details: { ok: false, error: "FILE_NOT_FOUND" } };
+      }
+
+      // 未指定 target 时，从当前会话上下文获取
+      if (!target) {
+        const ctx = getCurrentTarget();
+        if (ctx.isDirect && ctx.senderId) {
+          target = ctx.senderId;
+        } else if (!ctx.isDirect && ctx.conversationId) {
+          target = ctx.conversationId;
+        }
+      }
+
+      if (!target) {
+        return { content: [{ type: "text", text: `无法确定发送目标，请提供 target 参数（用户 ID 或 openConversationId）` }], details: { ok: false, error: "MISSING_TARGET" } };
       }
 
       const config = api.runtime.config;
@@ -65,8 +84,6 @@ export default function register(api: OpenClawPluginApi) {
         clientId: channelCfg.clientId,
         clientSecret: channelCfg.clientSecret,
       };
-
-      const target = "523612186039813142";
       const basename = path.basename(filePath);
       
       logger.info(`发送文件: ${filePath} -> ${target}`);

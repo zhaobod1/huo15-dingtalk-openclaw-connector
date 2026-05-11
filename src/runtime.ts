@@ -44,3 +44,42 @@ export function getDingtalkRuntime(): PluginRuntime {
   }
   return v;
 }
+
+// ============ 当前会话 target 存储 ============
+// 用于 send_dingtalk_file 等工具在 agent 执行上下文中获取当前消息的发送者，
+// 避免硬编码 target 或要求 agent 手动传参。
+const CURRENT_TARGET_KEY = Symbol.for("huo15:dingtalk-openclaw-connector:currentTarget");
+
+interface CurrentTargetSlot {
+  senderId: string | null;
+  conversationId: string | null;
+  isDirect: boolean;
+}
+
+function getTargetSlot(): CurrentTargetSlot {
+  const g = globalThis as unknown as Record<symbol, CurrentTargetSlot | undefined>;
+  let slot = g[CURRENT_TARGET_KEY];
+  if (!slot) {
+    slot = { senderId: null, conversationId: null, isDirect: true };
+    g[CURRENT_TARGET_KEY] = slot;
+  }
+  return slot;
+}
+
+export function setCurrentTarget(senderId: string, conversationId: string, isDirect: boolean): void {
+  const s = getTargetSlot();
+  s.senderId = senderId;
+  s.conversationId = conversationId;
+  s.isDirect = isDirect;
+}
+
+export function getCurrentTarget(): { senderId: string | null; conversationId: string | null; isDirect: boolean } {
+  const s = getTargetSlot();
+  return { senderId: s.senderId, conversationId: s.conversationId, isDirect: s.isDirect };
+}
+
+export function clearCurrentTarget(): void {
+  const s = getTargetSlot();
+  s.senderId = null;
+  s.conversationId = null;
+}
