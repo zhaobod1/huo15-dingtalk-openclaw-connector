@@ -51,9 +51,9 @@ export async function monitorDingtalkProvider(opts: MonitorDingtalkOpts = {}): P
 
   // 并行导入所有模块（无循环依赖，可以并行）
   const [accountsModule, monitorAccountModule, monitorSingleModule] = await Promise.all([
-    import("../config/accounts"),
-    import("./message-handler"),
-    import("./connection"),
+    import("../config/accounts.js"),
+    import("./message-handler.js"),
+    import("./connection.js"),
   ]);
   
   const { resolveDingtalkAccount, listEnabledDingtalkAccounts } = accountsModule;
