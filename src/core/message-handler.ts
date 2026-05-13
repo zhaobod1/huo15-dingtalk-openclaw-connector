@@ -1507,7 +1507,7 @@ export async function handleDingTalkMessageInternal(params: HandleMessageParams)
           );
 
           // ✅ 处理裸露的本地文件路径（绕过 OpenClaw SDK 的 bug）
-          const { processRawMediaPaths } = await import('../services/media');
+          const { processRawMediaPaths } = await import('../services/media.js');
           finalText = await processRawMediaPaths(
             finalText,
             config,

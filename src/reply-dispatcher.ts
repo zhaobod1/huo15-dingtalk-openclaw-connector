@@ -327,7 +327,7 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
         
         // ✅ 处理裸露的本地文件路径（绕过 OpenClaw SDK 的 bug）
         log.info(`[DingTalk][closeStreaming] 准备调用 processRawMediaPaths`);
-        const { processRawMediaPaths } = await import('./services/media');
+        const { processRawMediaPaths } = await import('./services/media.js');
         finalText = await processRawMediaPaths(
           finalText,
           account.config as DingtalkConfig,
@@ -406,7 +406,7 @@ export function createDingtalkReplyDispatcher(params: CreateDingtalkReplyDispatc
             const oapiToken = await getOapiAccessToken(account.config as DingtalkConfig);
             if (oapiToken) {
               log.info(`[DingTalk][deliver] 检测到 final 响应，准备处理裸露文件路径`);
-              const { processRawMediaPaths } = await import('./services/media');
+              const { processRawMediaPaths } = await import('./services/media.js');
               text = await processRawMediaPaths(
                 text,
                 account.config as DingtalkConfig,

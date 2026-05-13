@@ -1,6 +1,6 @@
 {
   "name": "@huo15/dingtalk-openclaw-connector",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "火一五定制版钉钉 OpenClaw 连接器 - 支持记忆系统集成、会话管理、AI Card 流式响应",
   "main": "./index.ts",
   "type": "module",
